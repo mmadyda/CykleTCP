@@ -9,9 +9,14 @@ import pymysql
 import configparser
 from infi.systray.win32_adapter import GetSystemMetrics
 from kivy.clock import Clock
+from kivy.graphics import Canvas
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
+from kivy.uix.switch import Switch
 from kivy.uix.textinput import TextInput
 import paho.mqtt.client as mqtt
+from kivy.uix.togglebutton import ToggleButton
 from termcolor import colored
 import time
 from datetime import datetime as czas
@@ -328,6 +333,8 @@ class WywolaniaPage(StackLayout):
 
 
         self.liczba_przyciskow = 6.0
+        self.label_height = 0.03
+        self.pole_przyciskow = 1
 
         self.wcisnieto_magazyn = False
         self.wcisnieto_nastawiacz = False
@@ -343,24 +350,27 @@ class WywolaniaPage(StackLayout):
         self.data_narzedziowiec = ''
         self.data_utrzymanie = ''
 
-        self.btn_przywolaj_magazyn = Button(text="Przywołaj\nMagazyn", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.title = Label(text=maszyna, size_hint=(1, self.label_height))
+
+        self.btn_przywolaj_magazyn = Button(text="Przywołaj\nMagazyn", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_magazyn.bind(on_touch_down=self.btn_przywolaj_magazyn_action)
 
-        self.btn_przywolaj_nastawiacza = Button(text="Przywołaj\nNastawiacza", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_przywolaj_nastawiacza = Button(text="Przywołaj\nNastawiacza", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_nastawiacza.bind(on_touch_down=self.btn_przywolaj_nastawiacza_action)
 
-        self.btn_przywolaj_jakosc = Button(text="Przywołaj\nKontrolę jakości", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_przywolaj_jakosc = Button(text="Przywołaj\nKontrolę jakości", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_jakosc.bind(on_touch_down=self.btn_przywolaj_jakosc_action)
 
-        self.btn_przywolaj_brygadziste = Button(text="Przywołaj\nBrygadzistę", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_przywolaj_brygadziste = Button(text="Przywołaj\nBrygadzistę", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_brygadziste.bind(on_touch_down=self.btn_przywolaj_brygadziste_action)
 
-        self.btn_przywolaj_narzedziowca = Button(text="Przywołaj\nNarzędziowca", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_przywolaj_narzedziowca = Button(text="Przywołaj\nNarzędziowca", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_narzedziowca.bind(on_touch_down=self.btn_przywolaj_narzedziowca_action)
 
-        self.btn_przywolaj_utrzymanie = Button(text="Przywołaj\nUtrzymanie ruchu", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_przywolaj_utrzymanie = Button(text="Przywołaj\nUtrzymanie ruchu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_utrzymanie.bind(on_touch_down=self.btn_przywolaj_utrzymanie_action)
 
+        self.title.font_size = "28sp"
         self.btn_przywolaj_magazyn.font_size = "28sp"
         self.btn_przywolaj_nastawiacza.font_size = "28sp"
         self.btn_przywolaj_jakosc.font_size = "28sp"
@@ -368,6 +378,7 @@ class WywolaniaPage(StackLayout):
         self.btn_przywolaj_narzedziowca.font_size = "28sp"
         self.btn_przywolaj_utrzymanie.font_size = "28sp"
 
+        self.title.valign = 'center'
         self.btn_przywolaj_magazyn.valign = 'center'
         self.btn_przywolaj_nastawiacza.valign = 'center'
         self.btn_przywolaj_jakosc.valign = 'center'
@@ -375,6 +386,7 @@ class WywolaniaPage(StackLayout):
         self.btn_przywolaj_narzedziowca.valign = 'center'
         self.btn_przywolaj_utrzymanie.valign = 'center'
 
+        self.title.halign = 'center'
         self.btn_przywolaj_magazyn.halign = 'center'
         self.btn_przywolaj_nastawiacza.halign = 'center'
         self.btn_przywolaj_jakosc.halign = 'center'
@@ -382,6 +394,7 @@ class WywolaniaPage(StackLayout):
         self.btn_przywolaj_narzedziowca.halign = 'center'
         self.btn_przywolaj_utrzymanie.halign = 'center'
 
+        self.add_widget(self.title)
         self.add_widget(self.btn_przywolaj_magazyn)
         self.add_widget(self.btn_przywolaj_nastawiacza)
         self.add_widget(self.btn_przywolaj_jakosc)
@@ -632,6 +645,8 @@ class WtryskarkaPage(StackLayout):
         self.cols = 1
         self.console_size = 0.6
         self.liczba_przyciskow = 10.0
+        self.label_height = 0.03
+        self.pole_przyciskow = 1
         Window.bind(on_request_close=self.exit_check)
         Window.bind(on_resize=self.on_window_resize)
 
@@ -643,40 +658,42 @@ class WtryskarkaPage(StackLayout):
 
         self.counter = 0
 
-        self.btn_praca = Button(text='Praca', size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.title = Label(text = maszyna, size_hint=(1, self.label_height))
+
+        self.btn_praca = Button(text='Praca', size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_praca.bind(on_press=self.btn_praca_action)
 
-        self.btn_proby = Button(text="Próby technologiczne", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_proby = Button(text="Próby technologiczne", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_proby.bind(on_press=self.btn_proby_action)
 
-        self.btn_postoj = Button(text="Postój planowany", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_postoj = Button(text="Postój planowany", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_postoj.bind(on_press=self.btn_postoj_action)
 
-        self.btn_przezbrajanie = Button(text="Przezbrajanie", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_przezbrajanie = Button(text="Przezbrajanie", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przezbrajanie.bind(on_press=self.btn_przezbrajanie_action)
 
-        self.btn_susz_m = Button(text="Suszenie materiału", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_susz_m = Button(text="Suszenie materiału", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_susz_m.bind(on_press=self.btn_susz_m_action)
 
-        self.btn_awaria_m = Button(text="Awaria maszyny", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_awaria_m = Button(text="Awaria maszyny", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_awaria_m.bind(on_press=self.btn_awaria_m_action)
 
-        self.btn_awaria_f = Button(text="Awaria formy", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_awaria_f = Button(text="Awaria formy", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_awaria_f.bind(on_press=self.btn_awaria_f_action)
 
-        self.btn_brak_zaop = Button(text="Brak zaopatrzenia", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_brak_zaop = Button(text="Brak zaopatrzenia", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_brak_zaop.bind(on_press=self.btn_brak_zaop_action)
 
-        self.btn_brak_oper = Button(text="Brak operatora", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_brak_oper = Button(text="Brak operatora", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_brak_oper.bind(on_press=self.btn_brak_oper_action)
 
-        self.btn_nie_zgloszono = Button(text="Nie zgłoszono", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        self.btn_nie_zgloszono = Button(text="Nie zgłoszono", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
 
-        # self.btn_wybrak_op = Button(text="Wada detalu", size_hint=(1, 1.0 / self.liczba_przyciskow))
+        # self.btn_wybrak_op = Button(text="Wada detalu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         # self.btn_wybrak_op.bind(on_press=self.btn_postoj_action)
         ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie
 
-
+        self.title.font_size = "28sp"
         self.btn_praca.font_size = "28sp"
         self.btn_awaria_m.font_size = "28sp"
         self.btn_awaria_f.font_size = "28sp"
@@ -690,6 +707,7 @@ class WtryskarkaPage(StackLayout):
         self.btn_nie_zgloszono.font_size = "28sp"
 
         # self.btn_wybrak_op.font_size = "20sp"
+        #zmiana
         self.default_button_color = self.btn_praca.background_color
         self.default_background_normal = self.btn_praca.background_normal
 
@@ -738,6 +756,7 @@ gorna_granica_wsp = 2
             # Window.bind(on_request_close=app.on_close)
             return
 
+        self.add_widget(self.title)
         self.add_widget(self.btn_praca)
         self.add_widget(self.btn_proby)
         self.add_widget(self.btn_postoj)
@@ -1425,6 +1444,7 @@ class App(App):
 
         # Initial, connection screen (we use passed in name to activate screen)
         # First create a page, then a new screen, add page to screen and screen to screen manager
+
 
         self.screen_manager = ScreenManager()
 
