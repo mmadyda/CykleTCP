@@ -4,19 +4,22 @@ import sys
 import socket
 import threading
 
+
 import paho
 import pymysql
 import configparser
 from infi.systray.win32_adapter import GetSystemMetrics
 from kivy.clock import Clock
-from kivy.graphics import Canvas
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
-from kivy.uix.switch import Switch
 from kivy.uix.textinput import TextInput
 import paho.mqtt.client as mqtt
-from kivy.uix.togglebutton import ToggleButton
+from kivymd.theming import ThemeManager
+from kivymd.app import MDApp
+from kivymd.uix.button import MDRectangleFlatButton, MDIconButton
+from kivymd.uix.label import MDLabel
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.screenmanager import MDScreenManager
+from kivymd.uix.stacklayout import MDStackLayout
 from termcolor import colored
 import time
 from datetime import datetime as czas
@@ -26,6 +29,7 @@ import kivy
 from kivy.uix.rst import RstDocument
 from kivy.uix.stacklayout import StackLayout
 from kivy.core.window import Window
+
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.config import Config
@@ -290,9 +294,15 @@ except:
 
 
 
-class KonsolaPage(StackLayout):
+class KonsolaPage(MDStackLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.label_height = 0.03
+        self.title = MDLabel(text=maszyna, size_hint=(1, self.label_height))
+        self.title.font_size = "28sp"
+        self.title.valign = 'center'
+        self.title.halign = 'center'
+
         self.console_size = 0.6
         self.console = RstDocument(text='',
                                    background_color=(
@@ -300,6 +310,7 @@ class KonsolaPage(StackLayout):
 
         self.info_on_color = 'on_blue'
         self.info_console_on_color = '#33ccff'
+        self.add_widget(self.title)
         self.add_widget(self.console)
 
     def print_console(self, str, color):
@@ -311,9 +322,10 @@ class KonsolaPage(StackLayout):
         self.console.scroll_y = 0
 
 
-konsola_page = KonsolaPage()
+#konsola_page = KonsolaPage()
 
-class WywolaniaPage(StackLayout):
+
+class WywolaniaPage(MDStackLayout):
     def __init__(self, **kwargs):
         global mqttPrzywolajTematy
         global mqttKasujTematy
@@ -333,8 +345,8 @@ class WywolaniaPage(StackLayout):
 
 
         self.liczba_przyciskow = 6.0
-        self.label_height = 0.03
-        self.pole_przyciskow = 1
+        self.title_height = 0.03
+        self.pole_przyciskow = 1-self.title_height
 
         self.wcisnieto_magazyn = False
         self.wcisnieto_nastawiacz = False
@@ -350,24 +362,24 @@ class WywolaniaPage(StackLayout):
         self.data_narzedziowiec = ''
         self.data_utrzymanie = ''
 
-        self.title = Label(text=maszyna, size_hint=(1, self.label_height))
+        self.title = MDLabel(text=maszyna, size_hint=(1, self.title_height))
 
-        self.btn_przywolaj_magazyn = Button(text="Przywołaj\nMagazyn", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_magazyn = MDRectangleFlatButton(text="Przywołaj\nMagazyn", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_magazyn.bind(on_touch_down=self.btn_przywolaj_magazyn_action)
 
-        self.btn_przywolaj_nastawiacza = Button(text="Przywołaj\nNastawiacza", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_nastawiacza = MDRectangleFlatButton(text="Przywołaj\nNastawiacza", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_nastawiacza.bind(on_touch_down=self.btn_przywolaj_nastawiacza_action)
 
-        self.btn_przywolaj_jakosc = Button(text="Przywołaj\nKontrolę jakości", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_jakosc = MDRectangleFlatButton(text="Przywołaj\nKontrolę jakości", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_jakosc.bind(on_touch_down=self.btn_przywolaj_jakosc_action)
 
-        self.btn_przywolaj_brygadziste = Button(text="Przywołaj\nBrygadzistę", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_brygadziste = MDRectangleFlatButton(text="Przywołaj\nBrygadzistę", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_brygadziste.bind(on_touch_down=self.btn_przywolaj_brygadziste_action)
 
-        self.btn_przywolaj_narzedziowca = Button(text="Przywołaj\nNarzędziowca", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_narzedziowca = MDRectangleFlatButton(text="Przywołaj\nNarzędziowca", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_narzedziowca.bind(on_touch_down=self.btn_przywolaj_narzedziowca_action)
 
-        self.btn_przywolaj_utrzymanie = Button(text="Przywołaj\nUtrzymanie ruchu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_utrzymanie = MDRectangleFlatButton(text="Przywołaj\nUtrzymanie ruchu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_utrzymanie.bind(on_touch_down=self.btn_przywolaj_utrzymanie_action)
 
         self.title.font_size = "28sp"
@@ -402,8 +414,27 @@ class WywolaniaPage(StackLayout):
         self.add_widget(self.btn_przywolaj_narzedziowca)
         self.add_widget(self.btn_przywolaj_utrzymanie)
 
-        self.default_button_color = self.btn_przywolaj_magazyn.background_color
-        self.default_background_normal = self.btn_przywolaj_magazyn.background_normal
+        self.default_button_color = utils.get_color_from_hex("#dddddd")
+        self.press_text_color = utils.get_color_from_hex("#ffffff")
+        self.default_text_color = utils.get_color_from_hex("#000000")
+
+
+        self.btn_przywolaj_magazyn.md_bg_color = self.default_button_color
+        self.btn_przywolaj_nastawiacza.md_bg_color = self.default_button_color
+        self.btn_przywolaj_jakosc.md_bg_color = self.default_button_color
+        self.btn_przywolaj_brygadziste.md_bg_color = self.default_button_color
+        self.btn_przywolaj_narzedziowca.md_bg_color = self.default_button_color
+        self.btn_przywolaj_utrzymanie.md_bg_color = self.default_button_color
+        # self.btn_przywolaj_kasuj.md_bg_color = self.default_button_color
+
+        self.btn_przywolaj_magazyn.text_color = self.default_text_color
+        self.btn_przywolaj_nastawiacza.text_color = self.default_text_color
+        self.btn_przywolaj_jakosc.text_color = self.default_text_color
+        self.btn_przywolaj_brygadziste.text_color = self.default_text_color
+        self.btn_przywolaj_narzedziowca.text_color = self.default_text_color
+        self.btn_przywolaj_utrzymanie.text_color = self.default_text_color
+        # self.btn_przywolaj_kasuj.text_color = self.default_text_color
+
         if(data_z_pliku):
             self.przyciski_z_pliku()
 
@@ -414,14 +445,14 @@ class WywolaniaPage(StackLayout):
             self.wcisnieto_magazyn = True
             now = czas.now()
             self.data_magazyn = now.strftime("%H:%M:%S")
-            self.btn_przywolaj_magazyn.background_normal = ''
-            self.btn_przywolaj_magazyn.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_magazyn.md_bg_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_magazyn.text_color = self.press_text_color
             self.btn_przywolaj_magazyn.text = "Przywołaj\nMagazyn "+self.data_magazyn
 
         elif touch.button == 'right' and self.wcisnieto_magazyn == True:
             self.wcisnieto_magazyn = False
-            self.btn_przywolaj_magazyn.background_color = self.default_button_color
-            self.btn_przywolaj_magazyn.background_normal = self.default_background_normal
+            self.btn_przywolaj_magazyn.md_bg_color = self.default_button_color
+            self.btn_przywolaj_magazyn.text_color = self.default_text_color
             self.btn_przywolaj_magazyn.text="Przywołaj\nMagazyn"
         self.reconnectMQTT()
         self.wyslij_MQTT()
@@ -434,13 +465,13 @@ class WywolaniaPage(StackLayout):
             self.wcisnieto_nastawiacz = True
             now = czas.now()
             self.data_nastawiacz = now.strftime("%H:%M:%S")
-            self.btn_przywolaj_nastawiacza.background_normal = ''
-            self.btn_przywolaj_nastawiacza.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_nastawiacza.md_bg_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_nastawiacza.text_color = self.press_text_color
             self.btn_przywolaj_nastawiacza.text = "Przywołaj\nNastawiacza "+self.data_nastawiacz
         elif touch.button == 'right' and self.wcisnieto_nastawiacz == True:
             self.wcisnieto_nastawiacz = False
-            self.btn_przywolaj_nastawiacza.background_color = self.default_button_color
-            self.btn_przywolaj_nastawiacza.background_normal = self.default_background_normal
+            self.btn_przywolaj_nastawiacza.md_bg_color = self.default_button_color
+            self.btn_przywolaj_nastawiacza.text_color = self.default_text_color
             self.btn_przywolaj_nastawiacza.text = "Przywołaj\nNastawiacza"
         self.reconnectMQTT()
         self.wyslij_MQTT()
@@ -456,13 +487,13 @@ class WywolaniaPage(StackLayout):
             self.wcisnieto_jakosc = True
             now = czas.now()
             self.data_jakosc = now.strftime("%H:%M:%S")
-            self.btn_przywolaj_jakosc.background_normal = ''
-            self.btn_przywolaj_jakosc.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_jakosc.md_bg_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_jakosc.text_color = self.press_text_color
             self.btn_przywolaj_jakosc.text = "Przywołaj\nKontrolę jakości "+ self.data_jakosc
         elif touch.button == 'right' and self.wcisnieto_jakosc == True:
             self.wcisnieto_jakosc = False
-            self.btn_przywolaj_jakosc.background_color = self.default_button_color
-            self.btn_przywolaj_jakosc.background_normal = self.default_background_normal
+            self.btn_przywolaj_jakosc.md_bg_color = self.default_button_color
+            self.btn_przywolaj_jakosc.text_color = self.default_text_color
             self.btn_przywolaj_jakosc.text = "Przywołaj\nKontrolę jakości"
         self.reconnectMQTT()
         self.wyslij_MQTT()
@@ -476,13 +507,13 @@ class WywolaniaPage(StackLayout):
             self.wcisnieto_brygadzista = True
             now = czas.now()
             self.data_brygadzista = now.strftime("%H:%M:%S")
-            self.btn_przywolaj_brygadziste.background_normal = ''
-            self.btn_przywolaj_brygadziste.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_brygadziste.md_bg_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_brygadziste.text_color = self.press_text_color
             self.btn_przywolaj_brygadziste.text = "Przywołaj\nBrygadzistę "+self.data_brygadzista
         elif touch.button == 'right'  and self.wcisnieto_brygadzista == True:
             self.wcisnieto_brygadzista = False
-            self.btn_przywolaj_brygadziste.background_color = self.default_button_color
-            self.btn_przywolaj_brygadziste.background_normal = self.default_background_normal
+            self.btn_przywolaj_brygadziste.md_bg_color = self.default_button_color
+            self.btn_przywolaj_brygadziste.text_color = self.default_text_color
             self.btn_przywolaj_brygadziste.text = "Przywołaj\nBrygadzistę"
         self.reconnectMQTT()
         self.wyslij_MQTT()
@@ -497,13 +528,13 @@ class WywolaniaPage(StackLayout):
             self.wcisnieto_narzedziowiec = True
             now = czas.now()
             self.data_narzedziowiec = now.strftime("%H:%M:%S")
-            self.btn_przywolaj_narzedziowca.background_normal = ''
-            self.btn_przywolaj_narzedziowca.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_narzedziowca.md_bg_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_narzedziowca.text_color = self.press_text_color
             self.btn_przywolaj_narzedziowca.text = "Przywołaj\nNarzędziowca "+ self.data_narzedziowiec
         elif touch.button == 'right' and self.wcisnieto_narzedziowiec == True:
             self.wcisnieto_narzedziowiec = False
-            self.btn_przywolaj_narzedziowca.background_color = self.default_button_color
-            self.btn_przywolaj_narzedziowca.background_normal = self.default_background_normal
+            self.btn_przywolaj_narzedziowca.md_bg_color = self.default_button_color
+            self.btn_przywolaj_narzedziowca.text_color = self.default_text_color
             self.btn_przywolaj_narzedziowca.text = "Przywołaj\nNarzędziowca"
         self.reconnectMQTT()
         self.wyslij_MQTT()
@@ -518,13 +549,13 @@ class WywolaniaPage(StackLayout):
             self.wcisnieto_utrzymanie = True
             now = czas.now()
             self.data_utrzymanie = now.strftime("%H:%M:%S")
-            self.btn_przywolaj_utrzymanie.background_normal = ''
-            self.btn_przywolaj_utrzymanie.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_utrzymanie.md_bg_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_utrzymanie.text_color = self.press_text_color
             self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie ruchu "+self.data_utrzymanie
         elif touch.button == 'right'  and self.wcisnieto_utrzymanie == True:
             self.wcisnieto_utrzymanie = False
-            self.btn_przywolaj_utrzymanie.background_color = self.default_button_color
-            self.btn_przywolaj_utrzymanie.background_normal = self.default_background_normal
+            self.btn_przywolaj_utrzymanie.md_bg_color = self.default_button_color
+            self.btn_przywolaj_utrzymanie.text_color = self.default_text_color
             self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie ruchu"
         self.reconnectMQTT()
         self.wyslij_MQTT()
@@ -553,22 +584,22 @@ class WywolaniaPage(StackLayout):
 
 
     def default_buttons_color(self):
-        self.btn_przywolaj_magazyn.background_color = self.default_button_color
-        self.btn_przywolaj_nastawiacza.background_color = self.default_button_color
-        self.btn_przywolaj_jakosc.background_color = self.default_button_color
-        self.btn_przywolaj_brygadziste.background_color = self.default_button_color
-        self.btn_przywolaj_narzedziowca.background_color = self.default_button_color
-        self.btn_przywolaj_utrzymanie.background_color = self.default_button_color
-        self.btn_przywolaj_kasuj.background_color = self.default_button_color
+        self.btn_przywolaj_magazyn.md_bg_color = self.default_button_color
+        self.btn_przywolaj_nastawiacza.md_bg_color = self.default_button_color
+        self.btn_przywolaj_jakosc.md_bg_color = self.default_button_color
+        self.btn_przywolaj_brygadziste.md_bg_color = self.default_button_color
+        self.btn_przywolaj_narzedziowca.md_bg_color = self.default_button_color
+        self.btn_przywolaj_utrzymanie.md_bg_color = self.default_button_color
+        #self.btn_przywolaj_kasuj.md_bg_color = self.default_button_color
 
 
-        self.btn_przywolaj_magazyn.background_normal = self.default_background_normal
-        self.btn_przywolaj_nastawiacza.background_normal = self.default_background_normal
-        self.btn_przywolaj_jakosc.background_normal = self.default_background_normal
-        self.btn_przywolaj_brygadziste.background_normal = self.default_background_normal
-        self.btn_przywolaj_narzedziowca.background_normal = self.default_background_normal
-        self.btn_przywolaj_utrzymanie.background_normal = self.default_background_normal
-        self.btn_przywolaj_kasuj.background_normal = self.default_background_normal
+        self.btn_przywolaj_magazyn.text_color = self.default_text_color
+        self.btn_przywolaj_nastawiacza.text_color = self.default_text_color
+        self.btn_przywolaj_jakosc.text_color = self.default_text_color
+        self.btn_przywolaj_brygadziste.text_color = self.default_text_color
+        self.btn_przywolaj_narzedziowca.text_color = self.default_text_color
+        self.btn_przywolaj_utrzymanie.text_color = self.default_text_color
+        #self.btn_przywolaj_kasuj.text_color = self.default_text_color
 
         self.btn_przywolaj_magazyn.text="Przywołaj\nMagazyn"
         self.btn_przywolaj_nastawiacza.text="Przywołaj\nNastawiacza"
@@ -576,7 +607,7 @@ class WywolaniaPage(StackLayout):
         self.btn_przywolaj_brygadziste.text="Przywołaj\nBrygadzistę"
         self.btn_przywolaj_narzedziowca.text="Przywołaj\nNarzędziowca"
         self.btn_przywolaj_utrzymanie.text="Przywołaj\nUtrzymanie ruchu"
-        self.btn_przywolaj_kasuj.text="Kasuj\nPrzywołanie"
+        #self.btn_przywolaj_kasuj.text="Kasuj\nPrzywołanie"
 
     def reconnectMQTT(self):
         global mqttPort
@@ -594,32 +625,32 @@ class WywolaniaPage(StackLayout):
     def przyciski_z_pliku(self):
         if wc_magazyn:
             self.btn_przywolaj_magazyn.background_normal = ''
-            self.btn_przywolaj_magazyn.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_magazyn.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_magazyn.text = "Przywołaj\nMagazyn "+dat_magazyn
             self.wcisnieto_magazyn = True
         if wc_nastawiacz:
             self.btn_przywolaj_nastawiacza.background_normal = ''
-            self.btn_przywolaj_nastawiacza.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_nastawiacza.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_nastawiacza.text = "Przywołaj\nNastawiacza "+dat_nastawiacz
             self.wcisnieto_nastawiacz = True
         if wc_jakosc:
             self.btn_przywolaj_jakosc.background_normal = ''
-            self.btn_przywolaj_jakosc.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_jakosc.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_jakosc.text = "Przywołaj\nKontrolę jakości "+dat_jakosc
             self.wcisnieto_jakosc = True
         if wc_brygadzista:
             self.btn_przywolaj_brygadziste.background_normal = ''
-            self.btn_przywolaj_brygadziste.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_brygadziste.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_brygadziste.text = "Przywołaj\nBrygadzistę "+dat_brygadzista
             self.wcisnieto_brygadzista = True
         if wc_narzedziowiec:
             self.btn_przywolaj_narzedziowca.background_normal = ''
-            self.btn_przywolaj_narzedziowca.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_narzedziowca.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_narzedziowca.text = "Przywołaj\nNarzędziowca "+dat_narzedziowiec
             self.wcisnieto_narzedziowiec = True
         if wc_utrzymanie:
             self.btn_przywolaj_utrzymanie.background_normal = ''
-            self.btn_przywolaj_utrzymanie.background_color = utils.get_color_from_hex(self.check_color)
+            self.btn_przywolaj_utrzymanie.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie ruchu "+dat_utrzymanie
             self.wcisnieto_utrzymanie = True
 
@@ -627,7 +658,7 @@ class WywolaniaPage(StackLayout):
 
 
 
-class WtryskarkaPage(StackLayout):
+class WtryskarkaPage(MDStackLayout):
     def __init__(self, **kwargs):
         global brak_conf
         global stop_application
@@ -646,7 +677,7 @@ class WtryskarkaPage(StackLayout):
         self.console_size = 0.6
         self.liczba_przyciskow = 10.0
         self.label_height = 0.03
-        self.pole_przyciskow = 1
+        self.pole_przyciskow = 1-self.label_height
         Window.bind(on_request_close=self.exit_check)
         Window.bind(on_resize=self.on_window_resize)
 
@@ -658,40 +689,42 @@ class WtryskarkaPage(StackLayout):
 
         self.counter = 0
 
-        self.title = Label(text = maszyna, size_hint=(1, self.label_height))
+        self.title = MDLabel(text = maszyna, size_hint=(1, self.label_height))
 
-        self.btn_praca = Button(text='Praca', size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_praca = MDRectangleFlatButton(text='Praca', size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_praca.bind(on_press=self.btn_praca_action)
 
-        self.btn_proby = Button(text="Próby technologiczne", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_proby = MDRectangleFlatButton(text="Próby technologiczne", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_proby.bind(on_press=self.btn_proby_action)
 
-        self.btn_postoj = Button(text="Postój planowany", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_postoj = MDRectangleFlatButton(text="Postój planowany", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_postoj.bind(on_press=self.btn_postoj_action)
 
-        self.btn_przezbrajanie = Button(text="Przezbrajanie", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przezbrajanie = MDRectangleFlatButton(text="Przezbrajanie", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przezbrajanie.bind(on_press=self.btn_przezbrajanie_action)
 
-        self.btn_susz_m = Button(text="Suszenie materiału", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_susz_m = MDRectangleFlatButton(text="Suszenie materiału", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_susz_m.bind(on_press=self.btn_susz_m_action)
 
-        self.btn_awaria_m = Button(text="Awaria maszyny", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_awaria_m = MDRectangleFlatButton(text="Awaria maszyny", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_awaria_m.bind(on_press=self.btn_awaria_m_action)
 
-        self.btn_awaria_f = Button(text="Awaria formy", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_awaria_f = MDRectangleFlatButton(text="Awaria formy", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_awaria_f.bind(on_press=self.btn_awaria_f_action)
 
-        self.btn_brak_zaop = Button(text="Brak zaopatrzenia", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_brak_zaop = MDRectangleFlatButton(text="Brak zaopatrzenia", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_brak_zaop.bind(on_press=self.btn_brak_zaop_action)
 
-        self.btn_brak_oper = Button(text="Brak operatora", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_brak_oper = MDRectangleFlatButton(text="Brak operatora", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_brak_oper.bind(on_press=self.btn_brak_oper_action)
 
-        self.btn_nie_zgloszono = Button(text="Nie zgłoszono", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_nie_zgloszono = MDRectangleFlatButton(text="Nie zgłoszono", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
 
         # self.btn_wybrak_op = Button(text="Wada detalu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         # self.btn_wybrak_op.bind(on_press=self.btn_postoj_action)
         ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie
+        self.title.valign = "center"
+        self.title.halign = "center"
 
         self.title.font_size = "28sp"
         self.btn_praca.font_size = "28sp"
@@ -708,8 +741,13 @@ class WtryskarkaPage(StackLayout):
 
         # self.btn_wybrak_op.font_size = "20sp"
         #zmiana
-        self.default_button_color = self.btn_praca.background_color
-        self.default_background_normal = self.btn_praca.background_normal
+
+        self.default_text_color = utils.get_color_from_hex("#000000")
+        self.default_button_color = utils.get_color_from_hex("#dddddd")
+        self.press_text_color = utils.get_color_from_hex("#ffffff")
+
+
+
 
         # self.default_button_color = utils.get_color_from_hex("009EE0")
         # self.default_background_normal = 'white'
@@ -797,8 +835,10 @@ gorna_granica_wsp = 2
         print(colored('P1 -> PRACA', on_color=self.info_on_color))
         konsola_page.print_console('P1 -> PRACA', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_praca.background_normal = ''
-        self.btn_praca.background_color = utils.get_color_from_hex("#608934")
+        #self.btn_praca.background_normal = ''
+        #self.btn_praca.background_color = utils.get_color_from_hex("#608934")
+        self.btn_praca.text_color = self.press_text_color
+        self.btn_praca.md_bg_color = utils.get_color_from_hex("#608934")
 
     def btn_proby_action(self, instance):
         global przycisk
@@ -806,16 +846,16 @@ gorna_granica_wsp = 2
         print(colored('P2 -> PROBY TECHNOLOGICZNE', on_color=self.info_on_color))
         konsola_page.print_console('P2 -> PROBY TECHNOLOGICZNE', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_proby.background_normal = ''
-        self.btn_proby.background_color = utils.get_color_from_hex("#92D050")
+        self.btn_proby.text_color = self.press_text_color
+        self.btn_proby.md_bg_color = utils.get_color_from_hex("#92D050")
     def btn_postoj_action(self, instance):
         global przycisk
         przycisk = 'P3'
         print(colored('P3 -> POSTOJ', on_color=self.info_on_color))
         konsola_page.print_console('P3 -> POSTOJ', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_postoj.background_normal = ''
-        self.btn_postoj.background_color = utils.get_color_from_hex("#BFBFBF")
+        self.btn_postoj.text_color = self.press_text_color
+        self.btn_postoj.md_bg_color = utils.get_color_from_hex("#BFBFBF")
 
     def btn_przezbrajanie_action(self, instance):
         global przycisk
@@ -823,8 +863,8 @@ gorna_granica_wsp = 2
         print(colored('P4 -> PRZEZBRAJANIE', on_color=self.info_on_color))
         konsola_page.print_console('P4 -> PRZEZBRAJANIE', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_przezbrajanie.background_normal = ''
-        self.btn_przezbrajanie.background_color = utils.get_color_from_hex("#1F618D")
+        self.btn_przezbrajanie.text_color = self.press_text_color
+        self.btn_przezbrajanie.md_bg_color = utils.get_color_from_hex("#1F618D")
 
     def btn_susz_m_action(self, instance):
         global przycisk
@@ -832,8 +872,8 @@ gorna_granica_wsp = 2
         print(colored('P5 -> SUSZENIE MATERIAŁU', on_color=self.info_on_color))
         konsola_page.print_console('P5 -> SUSZENIE MATERIAŁU', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_susz_m.background_normal = ''
-        self.btn_susz_m.background_color = utils.get_color_from_hex("#8d6e63")
+        self.btn_susz_m.text_color = self.press_text_color
+        self.btn_susz_m.md_bg_color = utils.get_color_from_hex("#8d6e63")
 
     def btn_awaria_m_action(self, instance):
         global przycisk
@@ -841,17 +881,17 @@ gorna_granica_wsp = 2
         print(colored('P6 -> AWARIA MASZYNY', on_color=self.info_on_color))
         konsola_page.print_console('P6 -> AWARIA MASZYNY', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_awaria_m.background_normal = ''
-        self.btn_awaria_m.background_color = utils.get_color_from_hex("#7B241C")
+        self.btn_awaria_m.text_color = self.press_text_color
+        self.btn_awaria_m.md_bg_color = utils.get_color_from_hex("#7B241C")
 
     def btn_awaria_f_action(self, instance):
         global przycisk
         przycisk = 'P7'
-        print(colored('P67 -> AWARIA FORMY', on_color=self.info_on_color))
+        print(colored('P7 -> AWARIA FORMY', on_color=self.info_on_color))
         konsola_page.print_console('P7 -> AWARIA FORMY', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_awaria_f.background_normal = ''
-        self.btn_awaria_f.background_color = utils.get_color_from_hex("#C0392B")
+        self.btn_awaria_f.text_color = self.press_text_color
+        self.btn_awaria_f.md_bg_color = utils.get_color_from_hex("#C0392B")
 
     def btn_brak_zaop_action(self, instance):
         global przycisk
@@ -859,16 +899,16 @@ gorna_granica_wsp = 2
         print(colored('P8 -> BRAK ZAOPATRZENIA', on_color=self.info_on_color))
         konsola_page.print_console('P8 -> BRAK ZAOPATRZENIA', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_brak_zaop.background_normal = ''
-        self.btn_brak_zaop.background_color = utils.get_color_from_hex("#CEC250")
+        self.btn_brak_zaop.text_color = self.press_text_color
+        self.btn_brak_zaop.md_bg_color = utils.get_color_from_hex("#CEC250")
     def btn_brak_oper_action(self, instance):
         global przycisk
         przycisk = 'P9'
         print(colored('P9 -> BRAK OPERATORA', on_color=self.info_on_color))
         konsola_page.print_console('P9 -> BRAK OPERATORA', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_brak_oper.background_normal = ''
-        self.btn_brak_oper.background_color = utils.get_color_from_hex("#8E44AD")
+        self.btn_brak_oper.text_color = self.press_text_color
+        self.btn_brak_oper.md_bg_color = utils.get_color_from_hex("#8E44AD")
 
     def btn_nie_zgloszono_color(self):
         global przycisk
@@ -876,43 +916,57 @@ gorna_granica_wsp = 2
         print(colored('P10-> NIE ZGLOSZONO', on_color=self.info_on_color))
         konsola_page.print_console('P10 -> NIE ZGLOSZONO', self.info_console_on_color)
         self.default_buttons_color()
-        self.btn_nie_zgloszono.background_normal = ''
-        self.btn_nie_zgloszono.background_color = utils.get_color_from_hex("#FF0000")
+        self.btn_nie_zgloszono.text_color = self.press_text_color
+        self.btn_nie_zgloszono.md_bg_color = utils.get_color_from_hex("#FF0000")
 
         ###############################################################################################################
 
 
 
     def default_buttons_color(self):
-        self.btn_praca.background_color = self.default_button_color
-        self.btn_awaria_m.background_color = self.default_button_color
-        self.btn_awaria_f.background_color = self.default_button_color
-        self.btn_przezbrajanie.background_color = self.default_button_color
-        self.btn_susz_m.background_color = self.default_button_color
-        self.btn_proby.background_color = self.default_button_color
-        self.btn_brak_zaop.background_color = self.default_button_color
-        self.btn_brak_oper.background_color = self.default_button_color
-        self.btn_postoj.background_color = self.default_button_color
-        self.btn_nie_zgloszono.background_color = self.default_button_color
+        self.btn_praca.md_bg_color = self.default_button_color
 
-        self.btn_praca.background_normal = self.default_background_normal
-        self.btn_awaria_m.background_normal = self.default_background_normal
-        self.btn_awaria_f.background_normal = self.default_background_normal
-        self.btn_przezbrajanie.background_normal = self.default_background_normal
-        self.btn_susz_m.background_normal = self.default_background_normal
-        self.btn_proby.background_normal = self.default_background_normal
-        self.btn_brak_zaop.background_normal = self.default_background_normal
-        self.btn_brak_oper.background_normal = self.default_background_normal
-        self.btn_postoj.background_normal = self.default_background_normal
-        self.btn_nie_zgloszono.background_normal = self.default_background_normal
+        self.btn_awaria_m.md_bg_color = self.default_button_color
+        self.btn_awaria_f.md_bg_color = self.default_button_color
+        self.btn_przezbrajanie.md_bg_color = self.default_button_color
+        self.btn_susz_m.md_bg_color = self.default_button_color
+        self.btn_proby.md_bg_color = self.default_button_color
+        self.btn_brak_zaop.md_bg_color = self.default_button_color
+        self.btn_brak_oper.md_bg_color = self.default_button_color
+        self.btn_postoj.md_bg_color = self.default_button_color
+        self.btn_nie_zgloszono.md_bg_color = self.default_button_color
+
+        self.btn_praca.text_color = self.default_text_color
+
+        self.btn_awaria_m.text_color = self.default_text_color
+        self.btn_awaria_f.text_color = self.default_text_color
+        self.btn_przezbrajanie.text_color = self.default_text_color
+        self.btn_susz_m.text_color = self.default_text_color
+        self.btn_proby.text_color = self.default_text_color
+        self.btn_brak_zaop.text_color = self.default_text_color
+        self.btn_brak_oper.text_color = self.default_text_color
+        self.btn_postoj.text_color = self.default_text_color
+        self.btn_nie_zgloszono.text_color = self.default_text_color
 
 
-wtryskarka_page = WtryskarkaPage()
-wywolania_page = WywolaniaPage()
+#wtryskarka_page = WtryskarkaPage()
+#wywolania_page = WywolaniaPage()
+konsola_page = None
+wtryskarka_page = None
+wywolania_page = None
 
-class App(App):
-    def __init__(self):
-        super().__init__()
+class App(MDApp):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        global konsola_page
+        global wtryskarka_page
+        global wywolania_page
+
+        konsola_page = KonsolaPage()
+        wtryskarka_page = WtryskarkaPage()
+        wywolania_page = WywolaniaPage()
+
 
         self.title = f'{maszyna} {miejsce} {czas_wysylania}s {LOCAL_IP} WERSJA: {wersja}'
         self.icon = os.path.join('data', 'img', 'icon.png')
@@ -1431,6 +1485,7 @@ class App(App):
         global data_z_pliku
         global konsola_page
 
+
         self.run_console = False
         konsola_page.print_console(start_text, '#ffffff')
 
@@ -1446,20 +1501,20 @@ class App(App):
         # First create a page, then a new screen, add page to screen and screen to screen manager
 
 
-        self.screen_manager = ScreenManager()
+        self.screen_manager = MDScreenManager()
 
 
-        self.screen_wtryskarka = Screen(name='Wtryskarka')
+        self.screen_wtryskarka = MDScreen(name='Wtryskarka')
         self.screen_wtryskarka.add_widget(wtryskarka_page)
         self.screen_manager.add_widget(self.screen_wtryskarka)
 
         # Info page
 
-        self.screen_wywolania = Screen(name='Wywolania')
+        self.screen_wywolania = MDScreen(name='Wywolania')
         self.screen_wywolania.add_widget(wywolania_page)
         self.screen_manager.add_widget(self.screen_wywolania)
 
-        self.screen_konsola = Screen(name='Konsola')
+        self.screen_konsola = MDScreen(name='Konsola')
         self.screen_konsola.add_widget(konsola_page)
         self.screen_manager.add_widget(self.screen_konsola)
 
@@ -1476,8 +1531,8 @@ class App(App):
         if(zmieniaj_okna):
             Clock.schedule_interval(self.zmien_okno, czas_zmiana_okna)
 
-
         return self.screen_manager
+
 
     def zmien_okno(self, dt):
         global wywolania_page
