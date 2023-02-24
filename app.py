@@ -297,11 +297,7 @@ except:
 class KonsolaPage(MDStackLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.label_height = 0.03
-        self.title = MDLabel(text=maszyna, size_hint=(1, self.label_height))
-        self.title.font_size = "28sp"
-        self.title.valign = 'center'
-        self.title.halign = 'center'
+        self.md_bg_color = "#ffffff"
 
         self.console_size = 0.6
         self.console = RstDocument(text='',
@@ -310,7 +306,6 @@ class KonsolaPage(MDStackLayout):
 
         self.info_on_color = 'on_blue'
         self.info_console_on_color = '#33ccff'
-        self.add_widget(self.title)
         self.add_widget(self.console)
 
     def print_console(self, str, color):
@@ -339,14 +334,14 @@ class WywolaniaPage(MDStackLayout):
         self.info_on_color = 'on_blue'
         self.info_console_on_color = '#33ccff'
         self.check_color = "#92D050"
+        self.md_bg_color = "#ffffff"
 
 
 
 
 
         self.liczba_przyciskow = 6.0
-        self.title_height = 0.03
-        self.pole_przyciskow = 1-self.title_height
+        self.pole_przyciskow = 1
 
         self.wcisnieto_magazyn = False
         self.wcisnieto_nastawiacz = False
@@ -362,7 +357,6 @@ class WywolaniaPage(MDStackLayout):
         self.data_narzedziowiec = ''
         self.data_utrzymanie = ''
 
-        self.title = MDLabel(text=maszyna, size_hint=(1, self.title_height))
 
         self.btn_przywolaj_magazyn = MDRectangleFlatButton(text="Przywołaj\nMagazyn", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_magazyn.bind(on_touch_down=self.btn_przywolaj_magazyn_action)
@@ -382,7 +376,6 @@ class WywolaniaPage(MDStackLayout):
         self.btn_przywolaj_utrzymanie = MDRectangleFlatButton(text="Przywołaj\nUtrzymanie ruchu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_utrzymanie.bind(on_touch_down=self.btn_przywolaj_utrzymanie_action)
 
-        self.title.font_size = "28sp"
         self.btn_przywolaj_magazyn.font_size = "28sp"
         self.btn_przywolaj_nastawiacza.font_size = "28sp"
         self.btn_przywolaj_jakosc.font_size = "28sp"
@@ -390,7 +383,6 @@ class WywolaniaPage(MDStackLayout):
         self.btn_przywolaj_narzedziowca.font_size = "28sp"
         self.btn_przywolaj_utrzymanie.font_size = "28sp"
 
-        self.title.valign = 'center'
         self.btn_przywolaj_magazyn.valign = 'center'
         self.btn_przywolaj_nastawiacza.valign = 'center'
         self.btn_przywolaj_jakosc.valign = 'center'
@@ -398,7 +390,6 @@ class WywolaniaPage(MDStackLayout):
         self.btn_przywolaj_narzedziowca.valign = 'center'
         self.btn_przywolaj_utrzymanie.valign = 'center'
 
-        self.title.halign = 'center'
         self.btn_przywolaj_magazyn.halign = 'center'
         self.btn_przywolaj_nastawiacza.halign = 'center'
         self.btn_przywolaj_jakosc.halign = 'center'
@@ -406,7 +397,6 @@ class WywolaniaPage(MDStackLayout):
         self.btn_przywolaj_narzedziowca.halign = 'center'
         self.btn_przywolaj_utrzymanie.halign = 'center'
 
-        self.add_widget(self.title)
         self.add_widget(self.btn_przywolaj_magazyn)
         self.add_widget(self.btn_przywolaj_nastawiacza)
         self.add_widget(self.btn_przywolaj_jakosc)
@@ -672,12 +662,12 @@ class WtryskarkaPage(MDStackLayout):
         super().__init__(**kwargs)
         self.info_on_color = 'on_blue'
         self.info_console_on_color = '#33ccff'
+        self.md_bg_color = "#ffffff"
 
         self.cols = 1
         self.console_size = 0.6
         self.liczba_przyciskow = 10.0
-        self.label_height = 0.03
-        self.pole_przyciskow = 1-self.label_height
+        self.pole_przyciskow = 1
         Window.bind(on_request_close=self.exit_check)
         Window.bind(on_resize=self.on_window_resize)
 
@@ -689,7 +679,6 @@ class WtryskarkaPage(MDStackLayout):
 
         self.counter = 0
 
-        self.title = MDLabel(text = maszyna, size_hint=(1, self.label_height))
 
         self.btn_praca = MDRectangleFlatButton(text='Praca', size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_praca.bind(on_press=self.btn_praca_action)
@@ -723,10 +712,7 @@ class WtryskarkaPage(MDStackLayout):
         # self.btn_wybrak_op = Button(text="Wada detalu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         # self.btn_wybrak_op.bind(on_press=self.btn_postoj_action)
         ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie
-        self.title.valign = "center"
-        self.title.halign = "center"
 
-        self.title.font_size = "28sp"
         self.btn_praca.font_size = "28sp"
         self.btn_awaria_m.font_size = "28sp"
         self.btn_awaria_f.font_size = "28sp"
@@ -794,7 +780,6 @@ gorna_granica_wsp = 2
             # Window.bind(on_request_close=app.on_close)
             return
 
-        self.add_widget(self.title)
         self.add_widget(self.btn_praca)
         self.add_widget(self.btn_proby)
         self.add_widget(self.btn_postoj)
@@ -978,6 +963,7 @@ class App(MDApp):
         global przycisk
         global wtryskarka_page
         global wywolania_page
+        global maszyna
         # Create a TCP/IP socket
 
         while True:
@@ -1017,15 +1003,15 @@ class App(MDApp):
                             break
                         data = connection.recv(BUFFER_SIZE)
                         sygnal = data.decode()
-                        if sygnal == 'wtrysk':
+                        if sygnal == 'wtrysk_'+maszyna:
                             # print(colored(f'WTRYSK', 'blue'))
                             self.inter_wtrysk()
                             raise Exception('Restart servera-wtrysk')
-                        elif sygnal == 'wybrak':
+                        elif sygnal == 'wybrak_'+maszyna:
                             # print(colored(f'WYBRAK', 'red'))
                             self.inter_wybrak()
                             raise Exception('Restart servera-wybrak')
-                        elif sygnal == 'automat':
+                        elif sygnal == 'automat_'+maszyna:
                             #AUTOMAT KIEDY PRÓBY
                             if przycisk == "P2":
                                 print(colored(f'AUTOMAT W CZASIE PRÓB--> przycisk P2', 'green'))
@@ -1500,6 +1486,8 @@ class App(MDApp):
         # Initial, connection screen (we use passed in name to activate screen)
         # First create a page, then a new screen, add page to screen and screen to screen manager
 
+        self.tytul = MDLabel(text=maszyna, size_hint=(1, 0.04),padding=(20,0))
+        self.tytul.font_size = "16sp"
 
         self.screen_manager = MDScreenManager()
 
@@ -1531,7 +1519,7 @@ class App(MDApp):
         if(zmieniaj_okna):
             Clock.schedule_interval(self.zmien_okno, czas_zmiana_okna)
 
-        return self.screen_manager
+        return MDScreen(self.screen_manager,MDStackLayout(self.tytul))
 
 
     def zmien_okno(self, dt):
