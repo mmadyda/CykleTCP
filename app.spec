@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['app.py'],
-             pathex=['C:\\Users\\marek\\PycharmProjects\\CykleAppLANtick'],
+             pathex=['C:\\Users\\marek\\PycharmProjects\\CykleTCP'],
              binaries=[],
              datas=[],
              hiddenimports=[],
