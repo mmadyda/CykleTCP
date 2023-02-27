@@ -267,7 +267,7 @@ start_text = f'''
 
 
 try:
-    pkl_file = open(os.path.join('data', 'data.pkl'), 'rb')
+    pkl_file = open(os.path.join('data', maszyna+'.pkl'), 'rb')
     pref = pickle.load(pkl_file)
     przycisk = pref['przycisk']
     wtrysk_s = int(pref['wtrysk_s'])
@@ -1565,7 +1565,7 @@ def restart_program():
             'data_narzedziowiec': wywolania_page.data_narzedziowiec,
             'data_utrzymanie': wywolania_page.data_utrzymanie}
 
-    output = open(os.path.join('data', 'data.pkl'), 'wb')
+    output = open(os.path.join('data', maszyna+'.pkl'), 'wb')
 
     # Pickle dictionary using protocol 0.
     pickle.dump(dane, output, -1)
