@@ -76,6 +76,7 @@ print("SCREEN Width =", screen_width)
 print("SCREEN Height =", screen_height)
     # wymiary okna
 win_width = 500
+
 win_height = screen_height - 70
 # ZMIENIAĆ WERSJĘ PROGRAMU
 
@@ -140,6 +141,7 @@ config = configparser.ConfigParser()
 if os.path.exists(os.path.join('data', 'app.ini')):
     config.read(os.path.join('data', 'app.ini'))
 
+
     maszyna = str(config['DEFAULT']['maszyna'])  # nazwa maszyny
     miejsce = str(config['DEFAULT']['miejsce'])  # miejsce posadowienia maszyny
     czas_wysylania = int(config['DEFAULT']['czas_wysylania'])  # maksymalnu czas cyklu maszyny
@@ -151,8 +153,11 @@ if os.path.exists(os.path.join('data', 'app.ini')):
     czas_reset = int(config['DEFAULT']['czas_reset'])  #czas pomiędzy resetem programu
     zmieniaj_okna = config.getboolean('DEFAULT', 'zmieniaj_okna')
     czas_zmiana_okna = int(config['DEFAULT']['czas_zmiana_okna'])
+    wiele_maszyn = config.getboolean('DEFAULT', 'wiele_maszyn')  # wiele maszyn na jednym komputerze
+    nr_programu = int(config['DEFAULT']['nr_programu'])  # nr programu na pulpicie
 else:
     brak_conf = True
+
     maszyna = "IP"  # nazwa maszyny///////////////////////////////////////////////////////////////////////////////////////
     miejsce = "SKOCZOW"  # miejsce posadowienia maszyny/////////////////////////////////////////////////////////////////////
     czas_wysylania = 20  # maksymalnu czas cyklu maszyny////////////////////////////////////////////////////////////////////
@@ -160,12 +165,16 @@ else:
     dolna_granica_wsp = 1  # MINIMALNA LICZBA CYKLI POMIEDZY WYSLANIAMI DO BAZY domyślnie 1
     gorna_granica_wsp = 2  # MAKSYMALNA LICZBA CYKLI  POMIEDZY WYSLANIAMI DO BAZY domyślnie 2
     czas_reset = 3600  #czas pomiędzy resetem programu
-
     zmieniaj_okna = True #przełączaj okna w programie
     czas_zmiana_okna = 15 #czas przełączania okien
+    wiele_maszyn = False
+    nr_programu = 1
 
 if maszyna == "IP":
     maszyna = str(LOCAL_IP)
+
+if wiele_maszyn:
+    win_width = 300
 
 nazwa_bazy = "techniplast"
 haslo_bazy = "technitools192"
@@ -1581,8 +1590,10 @@ if __name__ == "__main__":
     Window.fullscreen = 0
     Window.size = (win_width, win_height)
     Window.clearcolor = utils.get_color_from_hex("#8c8c8c")
-
-    Window.left = (screen_width - win_width)
+    if wiele_maszyn:
+        Window.left = (screen_width - win_width*nr_programu)
+    else:
+        Window.left = (screen_width - win_width)
     Window.top = 30
 
     app = App()
