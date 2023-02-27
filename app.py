@@ -1593,7 +1593,6 @@ def restart_program():
 
 
     os.execv(sys.executable, ['python'] + sys.argv)
-    sys.exit(0)
 
 
 
