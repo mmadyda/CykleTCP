@@ -1,13 +1,12 @@
 import os
-import subprocess
 
-from time import sleep
+cw = os.getcwd()
 
-dirname, filename = os.path.split(os.path.abspath(__file__))
+os.chdir(os.path.join(cw,'PoliCykle','cykle1'))
+os.startfile('app1.exe')
 
-subprocess.call([os.path.join(dirname,'PoliCykle','cykle1', 'app1.exe'), 'arg'],cwd=os.path.join(dirname,'PoliCykle','cykle1'))
-subprocess.call([os.path.join(dirname,'PoliCykle','cykle2', 'app2.exe'), 'arg'],cwd=os.path.join(dirname,'PoliCykle','cykle2'))
+os.chdir(os.path.join(cw,'PoliCykle','cykle2'))
+os.startfile('app2.exe')
 
-
-#os.startfile(os.path.join(dirname,'PoliCykle','cykle3', 'app3.exe'))
-
+os.chdir(os.path.join(cw,'PoliCykle','cykle3'))
+os.startfile('app3.exe')

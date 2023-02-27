@@ -69,6 +69,7 @@ def enablePrint():
 
 wersja = '27.02.2023'
 
+cwd = os.getcwd()
 screen_width = GetSystemMetrics(0)
 screen_height = GetSystemMetrics(1)
 
@@ -86,9 +87,10 @@ Config.set('graphics', 'height', '700')
 Config.set('graphics', 'fullscreen', 0)
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 Config.set('graphics', 'resizable', 0)  # 0 being off 1 being on as in true/false
-Config.window_icon = os.path.join('data', 'img', 'icon.ico')
+Config.window_icon = os.path.join(cwd, 'data', 'img', 'icon.ico')
 
 brak_conf = False
+
 
 # Do wyświeltenia IP komputera na belce
 sIP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -138,8 +140,8 @@ def internet_on():
         return False
 
 config = configparser.ConfigParser()
-if os.path.exists(os.path.join('data', 'app.ini')):
-    config.read(os.path.join('data', 'app.ini'))
+if os.path.exists(os.path.join(cwd, 'data', 'app.ini')):
+    config.read(os.path.join(cwd, 'data', 'app.ini'))
 
 
     maszyna = str(config['DEFAULT']['maszyna'])  # nazwa maszyny
@@ -278,7 +280,7 @@ start_text = f'''
 
 
 try:
-    pkl_file = open(os.path.join('data', maszyna+'.pkl'), 'rb')
+    pkl_file = open(cwd, os.path.join('data', maszyna+'.pkl'), 'rb')
     pref = pickle.load(pkl_file)
     przycisk = pref['przycisk']
     wtrysk_s = int(pref['wtrysk_s'])
@@ -965,7 +967,7 @@ class App(MDApp):
 
 
         self.title = f'{maszyna} {miejsce} {czas_wysylania}s {LOCAL_IP} WERSJA: {wersja}'
-        self.icon = os.path.join('data', 'img', 'icon.png')
+        self.icon = os.path.join(cwd, 'data', 'img', 'icon.png')
 
 
 
@@ -1579,7 +1581,7 @@ def restart_program():
             'data_narzedziowiec': wywolania_page.data_narzedziowiec,
             'data_utrzymanie': wywolania_page.data_utrzymanie}
 
-    output = open(os.path.join('data', maszyna+'.pkl'), 'wb')
+    output = open(os.path.join(cwd, 'data', maszyna+'.pkl'), 'wb')
 
     # Pickle dictionary using protocol 0.
     pickle.dump(dane, output, -1)

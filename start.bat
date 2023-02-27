@@ -1,1 +1,0 @@
-start "" PoliCykle\cykle1\app1.exe
