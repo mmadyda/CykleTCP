@@ -3,24 +3,23 @@ import pickle
 import sys
 import socket
 import threading
-from multiprocessing import Process, current_process
 
 import paho
 import pymysql
 import configparser
 
-from tendo import singleton
 from infi.systray.win32_adapter import GetSystemMetrics
 from kivy.clock import Clock
 from kivy.uix.textinput import TextInput
 import paho.mqtt.client as mqtt
-from kivymd.theming import ThemeManager
+
 from kivymd.app import MDApp
-from kivymd.uix.button import MDRectangleFlatButton, MDIconButton
+from kivymd.uix.button import MDRectangleFlatButton
 from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.stacklayout import MDStackLayout
+from tendo import singleton
 from termcolor import colored
 import time
 from datetime import datetime as czas
@@ -28,20 +27,16 @@ import datetime
 import os
 import kivy
 from kivy.uix.rst import RstDocument
-from kivy.uix.stacklayout import StackLayout
 from kivy.core.window import Window
-from kivy.app import App
-from kivy.uix.button import Button
 from kivy.config import Config
 from kivy import utils
-from ping3 import ping, verbose_ping
+from ping3 import ping
 import ctypes  # An included library with Python install.
-from adafruit_rplidar import RPLidar
 
-from pynput.keyboard import Key
-#2022
-# Disable
 
+
+
+me = singleton.SingleInstance()
 
 
 def blockPrint():
@@ -69,7 +64,13 @@ def enablePrint():
 
 wersja = '27.02.2023'
 
+#sprawdzenie sciezki pliku frozet to pyinstaller
 cwd = os.getcwd()
+if getattr(sys, 'frozen', False):
+    cwd = os.path.dirname(sys.executable)
+elif __file__:
+    cwd = os.path.dirname(__file__)
+
 screen_width = GetSystemMetrics(0)
 screen_height = GetSystemMetrics(1)
 
@@ -280,7 +281,7 @@ start_text = f'''
 
 
 try:
-    pkl_file = open(cwd, os.path.join('data', maszyna+'.pkl'), 'rb')
+    pkl_file = open(os.path.join(cwd, 'data', maszyna+'.pkl'), 'rb')
     pref = pickle.load(pkl_file)
     przycisk = pref['przycisk']
     wtrysk_s = int(pref['wtrysk_s'])
@@ -760,7 +761,7 @@ class WtryskarkaPage(MDStackLayout):
         elif przycisk == 'P4':
             self.btn_przezbrajanie_action(None)
         elif przycisk == 'P5':
-            self.btn_suszenie_m_action(None)
+            self.btn_susz_m_action(None)
         elif przycisk == 'P6':
             self.btn_awaria_m_action(None)
         elif przycisk == 'P7':
@@ -964,6 +965,8 @@ class App(MDApp):
         konsola_page = KonsolaPage()
         wtryskarka_page = WtryskarkaPage()
         wywolania_page = WywolaniaPage()
+
+
 
 
         self.title = f'{maszyna} {miejsce} {czas_wysylania}s {LOCAL_IP} WERSJA: {wersja}'
@@ -1562,6 +1565,7 @@ def restart_program():
     global wybrak_s
     global wsp_wys_s
     global konsola_page
+    global me
 
     mqttClient.disconnect()
     dane = {'przycisk': przycisk,
@@ -1587,13 +1591,16 @@ def restart_program():
     pickle.dump(dane, output, -1)
     output.close()
 
+
     os.execv(sys.executable, ['python'] + sys.argv)
+    sys.exit(0)
+
 
 
 
 if __name__ == "__main__":
     #Sprawdzenie czy to ta sama instancja jak tak to sys.exit(0)
-    me = singleton.SingleInstance()
+
 
     res = threading.Timer(czas_reset, restart_program)
     res.start()
@@ -1605,6 +1612,7 @@ if __name__ == "__main__":
     else:
         Window.left = (screen_width - win_width)
     Window.top = 30
+
 
     app = App()
     app.run()

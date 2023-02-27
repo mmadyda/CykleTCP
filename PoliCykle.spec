@@ -1,7 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-
 block_cipher = None
-
 
 a = Analysis(['PoliCykle.py'],
              pathex=['C:\\Users\\marek\\PycharmProjects\\CykleTCP'],
