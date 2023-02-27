@@ -3,14 +3,15 @@ import pickle
 import sys
 import socket
 import threading
-
+from multiprocessing import Process, current_process
 
 import paho
 import pymysql
 import configparser
+
+from tendo import singleton
 from infi.systray.win32_adapter import GetSystemMetrics
 from kivy.clock import Clock
-from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.uix.textinput import TextInput
 import paho.mqtt.client as mqtt
 from kivymd.theming import ThemeManager
@@ -29,7 +30,6 @@ import kivy
 from kivy.uix.rst import RstDocument
 from kivy.uix.stacklayout import StackLayout
 from kivy.core.window import Window
-
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.config import Config
@@ -67,7 +67,7 @@ def enablePrint():
 # SKOCZOW/NARZEDZIOWNIA/#
 # SKOCZOW/UTRZYMANIE/#
 
-wersja = '21.02.2023'
+wersja = '27.02.2023'
 
 screen_width = GetSystemMetrics(0)
 screen_height = GetSystemMetrics(1)
@@ -270,8 +270,10 @@ start_text = f'''
 :[color=#FFFFFF]max cykl[/color]:       [color=#FFFFFF]{dolna_granica_wsp}[/color]    (1)
 :[color=#FFFFFF]min cykl[/color]:       [color=#FFFFFF]{gorna_granica_wsp}[/color]    (2)
 :[color=#FFFFFF]czas resetu[/color]:        [color=#FFFFFF]{czas_reset}[/color]    (3600)
-:[color=#FFFFFF]zmieniaj okna[/color]:      [color=#FFFFFF]{zmieniaj_okna}[/color]    (True)
+:[color=#FFFFFF]zmieniaj okna[/color]:      [color=#FFFFFF]{zmieniaj_okna}[/color]    (TRUE)
 :[color=#FFFFFF]czas zmiana okna[/color]:       [color=#FFFFFF]{czas_zmiana_okna}[/color]    (10)
+:[color=#FFFFFF]wiele maszyn[/color]:       [color=#FFFFFF]{wiele_maszyn}[/color]    (FALSE)
+:[color=#FFFFFF]nr programu[/color]:       [color=#FFFFFF]{nr_programu}[/color]    (1)
         '''
 
 
@@ -985,10 +987,12 @@ class App(MDApp):
             try:
                 sock.bind(server_address)
             except:
-                print('duplikat programu zostanie on zamknięty')
-                os._exit(0)
-                ctypes.windll.user32.MessageBoxW(0, "Ponowne uruchomienie programu\nprogram zostanie wyłączony", "Duplikat programu", 0)
-                stop_application = True
+                if not wiele_maszyn:
+                    #serwer przy pojedynczej maszynie nie uruchomi się dwa razy
+                    print('duplikat programu zostanie on zamknięty')
+                    os._exit(0)
+                    ctypes.windll.user32.MessageBoxW(0, "Ponowne uruchomienie programu\nprogram zostanie wyłączony", "Duplikat programu", 0)
+                    stop_application = True
 
 
 
@@ -1528,6 +1532,7 @@ class App(MDApp):
         if(zmieniaj_okna):
             Clock.schedule_interval(self.zmien_okno, czas_zmiana_okna)
 
+
         return MDScreen(self.screen_manager,MDStackLayout(self.tytul))
 
 
@@ -1585,13 +1590,16 @@ def restart_program():
 
 
 if __name__ == "__main__":
+    #Sprawdzenie czy to ta sama instancja jak tak to sys.exit(0)
+    me = singleton.SingleInstance()
+
     res = threading.Timer(czas_reset, restart_program)
     res.start()
     Window.fullscreen = 0
     Window.size = (win_width, win_height)
     Window.clearcolor = utils.get_color_from_hex("#8c8c8c")
     if wiele_maszyn:
-        Window.left = (screen_width - win_width*nr_programu)
+        Window.left = (screen_width - (win_width*nr_programu))
     else:
         Window.left = (screen_width - win_width)
     Window.top = 30
