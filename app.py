@@ -191,6 +191,9 @@ else:
     wiele_maszyn = False
     nr_programu = 1
 
+if wiele_maszyn:
+    TCP_PORT = 519+nr_programu-1
+
 if maszyna == "IP":
     maszyna = str(LOCAL_IP)
 
