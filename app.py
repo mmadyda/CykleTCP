@@ -1,13 +1,18 @@
 import json
 import pickle
+import subprocess
 import sys
 import socket
 import threading
 
 import paho
+import psutil as psutil
 import pymysql
 import configparser
 
+import win32api
+import win32con
+import win32process
 from infi.systray.win32_adapter import GetSystemMetrics
 from kivy.clock import Clock
 from kivy.uix.textinput import TextInput
@@ -35,8 +40,21 @@ import ctypes  # An included library with Python install.
 
 
 
+PROCNAME = os.path.basename(sys.executable)
 
-me = singleton.SingleInstance()
+proc_counter = 0
+for proc in psutil.process_iter():
+    if proc.name() == PROCNAME:
+        print(proc.name())
+        proc_counter +=1
+        if proc_counter > 2:
+            print("Proces o tej nazwie jest już uruchomiony")
+            print(proc.name())
+            os._exit(0)
+            ctypes.windll.user32.MessageBoxW(0, "Ponowne uruchomienie programu\nprogram zostanie wyłączony",
+                                             "Duplikat programu", 0)
+            stop_application = True
+
 
 
 def blockPrint():
@@ -62,7 +80,7 @@ def enablePrint():
 # SKOCZOW/NARZEDZIOWNIA/#
 # SKOCZOW/UTRZYMANIE/#
 
-wersja = '27.02.2023'
+wersja = '28.02.2023'
 
 #sprawdzenie sciezki pliku frozet to pyinstaller
 cwd = os.getcwd()
