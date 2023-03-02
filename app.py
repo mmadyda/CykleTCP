@@ -15,11 +15,13 @@ import win32con
 import win32process
 from infi.systray.win32_adapter import GetSystemMetrics
 from kivy.clock import Clock
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 import paho.mqtt.client as mqtt
 
 from kivymd.app import MDApp
 from kivymd.uix.button import MDRectangleFlatButton
+from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.screenmanager import MDScreenManager
@@ -80,7 +82,7 @@ def enablePrint():
 # SKOCZOW/NARZEDZIOWNIA/#
 # SKOCZOW/UTRZYMANIE/#
 
-wersja = '28.02.2023'
+wersja = '02.03.2023'
 
 #sprawdzenie sciezki pliku frozet to pyinstaller
 cwd = os.getcwd()
@@ -172,8 +174,6 @@ if os.path.exists(os.path.join(cwd, 'data', 'app.ini')):
     gorna_granica_wsp = int(
         config['DEFAULT']['gorna_granica_wsp'])  # MAKSYMALNA LICZBA CYKLI  POMIEDZY WYSLANIAMI DO BAZY domyślnie 2
     czas_reset = int(config['DEFAULT']['czas_reset'])  #czas pomiędzy resetem programu
-    zmieniaj_okna = config.getboolean('DEFAULT', 'zmieniaj_okna')
-    czas_zmiana_okna = int(config['DEFAULT']['czas_zmiana_okna'])
     wiele_maszyn = config.getboolean('DEFAULT', 'wiele_maszyn')  # wiele maszyn na jednym komputerze
     nr_programu = int(config['DEFAULT']['nr_programu'])  # nr programu na pulpicie
 else:
@@ -182,12 +182,9 @@ else:
     maszyna = "IP"  # nazwa maszyny///////////////////////////////////////////////////////////////////////////////////////
     miejsce = "SKOCZOW"  # miejsce posadowienia maszyny/////////////////////////////////////////////////////////////////////
     czas_wysylania = 20  # maksymalnu czas cyklu maszyny////////////////////////////////////////////////////////////////////
-
     dolna_granica_wsp = 1  # MINIMALNA LICZBA CYKLI POMIEDZY WYSLANIAMI DO BAZY domyślnie 1
     gorna_granica_wsp = 2  # MAKSYMALNA LICZBA CYKLI  POMIEDZY WYSLANIAMI DO BAZY domyślnie 2
     czas_reset = 3600  #czas pomiędzy resetem programu
-    zmieniaj_okna = True #przełączaj okna w programie
-    czas_zmiana_okna = 15 #czas przełączania okien
     wiele_maszyn = False
     nr_programu = 1
 
@@ -198,7 +195,7 @@ if maszyna == "IP":
     maszyna = str(LOCAL_IP)
 
 if wiele_maszyn:
-    win_width = 300
+    win_width = 350
 
 nazwa_bazy = "techniplast"
 haslo_bazy = "technitools192"
@@ -283,23 +280,38 @@ text_console_length = 5000
 
 data_z_pliku = False
 start_text = f'''
-[b][color=#009EE0]TECHNITOOLS[/color][/b]
+[b][color=#009EE0]Cykle TCP wersja: {wersja}[/color][/b]
 
-:[color=#FFFFFF]Autor[/color]:      [color=#FFFFFF]Marek Madyda[/color]
-:[color=#FFFFFF]Wersja programu[/color]:        [color=#FFFFFF]{wersja}[/color]
-:[color=#FFFFFF]Dane z pliku[/color]:       [color=#FFFFFF]app.ini[/color]
-:[color=#FFFFFF]Nazwa maszyny[/color]:      [color=#FFFFFF]{maszyna}[/color]
-:[color=#FFFFFF]Miejsce posadowienia[/color]:       [color=#FFFFFF]{miejsce}[/color] (SKOCZOW,USTRON,KONIAKOW)
-:[color=#FFFFFF]czas wysyłania[/color]:         [color=#FFFFFF]{czas_wysylania}[/color] (20,30,60,90,100,120)
-:[color=#FFFFFF]max cykl[/color]:       [color=#FFFFFF]{dolna_granica_wsp}[/color]    (1)
-:[color=#FFFFFF]min cykl[/color]:       [color=#FFFFFF]{gorna_granica_wsp}[/color]    (2)
-:[color=#FFFFFF]czas resetu[/color]:        [color=#FFFFFF]{czas_reset}[/color]    (3600)
-:[color=#FFFFFF]zmieniaj okna[/color]:      [color=#FFFFFF]{zmieniaj_okna}[/color]    (TRUE)
-:[color=#FFFFFF]czas zmiana okna[/color]:       [color=#FFFFFF]{czas_zmiana_okna}[/color]    (10)
-:[color=#FFFFFF]wiele maszyn[/color]:       [color=#FFFFFF]{wiele_maszyn}[/color]    (FALSE)
-:[color=#FFFFFF]nr programu[/color]:       [color=#FFFFFF]{nr_programu}[/color]    (1)
+[color=#FFFFFF]Autor[/color]                  [color=#FFFFFF]Marek Madyda[/color]
+
+[color=#FFFFFF]Wersja programu:[/color]        [color=#FFFFFF]{wersja}[/color]
+
+[color=#FFFFFF]Dane z pliku:[/color]           [color=#FFFFFF]app.ini[/color]
+
+[color=#FFFFFF]Nazwa maszyny:[/color]          [color=#FFFFFF]{maszyna}[/color]
+
+[color=#FFFFFF]Miejsce posadowienia:[/color]   [color=#FFFFFF]{miejsce}[/color] [color=#999999](SKOCZOW,USTRON,KONIAKOW)[/color]
+
+[color=#FFFFFF]czas wysyłania:[/color]         [color=#FFFFFF]{czas_wysylania}[/color] [color=#999999](40,60,90,100,120)[/color]
+
+[color=#FFFFFF]max cykl:[/color]               [color=#FFFFFF]{dolna_granica_wsp}[/color]    [color=#999999](1)[/color]
+
+[color=#FFFFFF]min cykl:[/color]               [color=#FFFFFF]{gorna_granica_wsp}[/color]    [color=#999999](2)[/color]
+
+[color=#FFFFFF]czas resetu:[/color]            [color=#FFFFFF]{czas_reset}[/color]    [color=#999999](3600)[/color]
+
+[color=#FFFFFF]wiele maszyn:[/color]           [color=#FFFFFF]{wiele_maszyn}[/color]    [color=#999999](FALSE)[/color]
+
+[color=#FFFFFF]nr programu:[/color]            [color=#FFFFFF]{nr_programu}[/color]    [color=#999999](1)[/color]
+
         '''
 
+wtryskarka_font_size = "28sp"
+wywolania_font_size = "24sp"
+
+if wiele_maszyn:
+    wtryskarka_font_size = "20sp"
+    wywolania_font_size = "16sp"
 
 try:
     pkl_file = open(os.path.join(cwd, 'data', maszyna+'.pkl'), 'rb')
@@ -333,6 +345,15 @@ class KonsolaPage(MDStackLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.md_bg_color = "#ffffff"
+        if wiele_maszyn:
+            self.dane_comm = MDLabel(text=f'IP {LOCAL_IP}  PORT {TCP_PORT} '
+                                          f'\nWysyłanie danych do bazy co: {czas_wysylania}s'
+                                          f'\nWiele maszyn: {wiele_maszyn}'
+                                          f'\nNumer programu: {nr_programu}', size_hint=(1, 0.1), padding=(10, 0))
+
+        else:
+            self.dane_comm = MDLabel(text=f'IP {LOCAL_IP}  PORT {TCP_PORT} '
+                                          f'\nWysyłanie danych do bazy co: {czas_wysylania}s', size_hint=(1, 0.06), padding=(10, 0))
 
         self.console_size = 0.6
         self.console = RstDocument(text='',
@@ -341,7 +362,17 @@ class KonsolaPage(MDStackLayout):
 
         self.info_on_color = 'on_blue'
         self.info_console_on_color = '#33ccff'
+        self.add_widget(self.dane_comm)
         self.add_widget(self.console)
+        self.print_console(start_text, '#ffffff')
+
+        if data_z_pliku:
+            self.print_console(
+        f'''[color=#FFFFFF]Wczytano dane z poprzedniego uruchomienia:[/color]\n
+        [color=#FFFFFF]PRZYCISK:[/color]    [color=#FFFFFF]{przycisk}[/color]\n
+        [color=#FFFFFF]WTRYSK:[/color]  [color=#FFFFFF]{wtrysk_s}[/color]\n
+        [color=#FFFFFF]WYBRAK:[/color]  [color=#FFFFFF]{wybrak_s}[/color]\n
+        [color=#FFFFFF]WSPÓŁCZYNNIK WYSYŁANIA:[/color]  [color=#FFFFFF]{wsp_wys_s}[/color]''', '#ffffff')
 
     def print_console(self, str, color):
         global text_console_length
@@ -399,7 +430,7 @@ class WywolaniaPage(MDStackLayout):
         self.btn_przywolaj_nastawiacza = MDRectangleFlatButton(text="Przywołaj\nNastawiacza", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_nastawiacza.bind(on_touch_down=self.btn_przywolaj_nastawiacza_action)
 
-        self.btn_przywolaj_jakosc = MDRectangleFlatButton(text="Przywołaj\nKontrolę jakości", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_jakosc = MDRectangleFlatButton(text="Przywołaj\nKontrolę\njakości", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_jakosc.bind(on_touch_down=self.btn_przywolaj_jakosc_action)
 
         self.btn_przywolaj_brygadziste = MDRectangleFlatButton(text="Przywołaj\nBrygadzistę", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
@@ -408,15 +439,15 @@ class WywolaniaPage(MDStackLayout):
         self.btn_przywolaj_narzedziowca = MDRectangleFlatButton(text="Przywołaj\nNarzędziowca", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_narzedziowca.bind(on_touch_down=self.btn_przywolaj_narzedziowca_action)
 
-        self.btn_przywolaj_utrzymanie = MDRectangleFlatButton(text="Przywołaj\nUtrzymanie ruchu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_utrzymanie = MDRectangleFlatButton(text="Przywołaj\nUtrzymanie\nruchu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_utrzymanie.bind(on_touch_down=self.btn_przywolaj_utrzymanie_action)
 
-        self.btn_przywolaj_magazyn.font_size = "28sp"
-        self.btn_przywolaj_nastawiacza.font_size = "28sp"
-        self.btn_przywolaj_jakosc.font_size = "28sp"
-        self.btn_przywolaj_brygadziste.font_size = "28sp"
-        self.btn_przywolaj_narzedziowca.font_size = "28sp"
-        self.btn_przywolaj_utrzymanie.font_size = "28sp"
+        self.btn_przywolaj_magazyn.font_size = wywolania_font_size
+        self.btn_przywolaj_nastawiacza.font_size = wywolania_font_size
+        self.btn_przywolaj_jakosc.font_size = wywolania_font_size
+        self.btn_przywolaj_brygadziste.font_size = wywolania_font_size
+        self.btn_przywolaj_narzedziowca.font_size = wywolania_font_size
+        self.btn_przywolaj_utrzymanie.font_size = wywolania_font_size
 
         self.btn_przywolaj_magazyn.valign = 'center'
         self.btn_przywolaj_nastawiacza.valign = 'center'
@@ -472,7 +503,7 @@ class WywolaniaPage(MDStackLayout):
             self.data_magazyn = now.strftime("%H:%M:%S")
             self.btn_przywolaj_magazyn.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_magazyn.text_color = self.press_text_color
-            self.btn_przywolaj_magazyn.text = "Przywołaj\nMagazyn "+self.data_magazyn
+            self.btn_przywolaj_magazyn.text = "Przywołaj\nMagazyn\n\n"+self.data_magazyn
 
         elif touch.button == 'right' and self.wcisnieto_magazyn == True:
             self.wcisnieto_magazyn = False
@@ -492,7 +523,7 @@ class WywolaniaPage(MDStackLayout):
             self.data_nastawiacz = now.strftime("%H:%M:%S")
             self.btn_przywolaj_nastawiacza.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_nastawiacza.text_color = self.press_text_color
-            self.btn_przywolaj_nastawiacza.text = "Przywołaj\nNastawiacza "+self.data_nastawiacz
+            self.btn_przywolaj_nastawiacza.text = "Przywołaj\nNastawiacza\n\n"+self.data_nastawiacz
         elif touch.button == 'right' and self.wcisnieto_nastawiacz == True:
             self.wcisnieto_nastawiacz = False
             self.btn_przywolaj_nastawiacza.md_bg_color = self.default_button_color
@@ -514,7 +545,7 @@ class WywolaniaPage(MDStackLayout):
             self.data_jakosc = now.strftime("%H:%M:%S")
             self.btn_przywolaj_jakosc.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_jakosc.text_color = self.press_text_color
-            self.btn_przywolaj_jakosc.text = "Przywołaj\nKontrolę jakości "+ self.data_jakosc
+            self.btn_przywolaj_jakosc.text = "Przywołaj\nKontrolę\njakości\n\n"+ self.data_jakosc
         elif touch.button == 'right' and self.wcisnieto_jakosc == True:
             self.wcisnieto_jakosc = False
             self.btn_przywolaj_jakosc.md_bg_color = self.default_button_color
@@ -534,7 +565,7 @@ class WywolaniaPage(MDStackLayout):
             self.data_brygadzista = now.strftime("%H:%M:%S")
             self.btn_przywolaj_brygadziste.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_brygadziste.text_color = self.press_text_color
-            self.btn_przywolaj_brygadziste.text = "Przywołaj\nBrygadzistę "+self.data_brygadzista
+            self.btn_przywolaj_brygadziste.text = "Przywołaj\nBrygadzistę\n\n"+self.data_brygadzista
         elif touch.button == 'right'  and self.wcisnieto_brygadzista == True:
             self.wcisnieto_brygadzista = False
             self.btn_przywolaj_brygadziste.md_bg_color = self.default_button_color
@@ -555,7 +586,7 @@ class WywolaniaPage(MDStackLayout):
             self.data_narzedziowiec = now.strftime("%H:%M:%S")
             self.btn_przywolaj_narzedziowca.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_narzedziowca.text_color = self.press_text_color
-            self.btn_przywolaj_narzedziowca.text = "Przywołaj\nNarzędziowca "+ self.data_narzedziowiec
+            self.btn_przywolaj_narzedziowca.text = "Przywołaj\nNarzędziowca\n\n"+ self.data_narzedziowiec
         elif touch.button == 'right' and self.wcisnieto_narzedziowiec == True:
             self.wcisnieto_narzedziowiec = False
             self.btn_przywolaj_narzedziowca.md_bg_color = self.default_button_color
@@ -576,12 +607,12 @@ class WywolaniaPage(MDStackLayout):
             self.data_utrzymanie = now.strftime("%H:%M:%S")
             self.btn_przywolaj_utrzymanie.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_utrzymanie.text_color = self.press_text_color
-            self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie ruchu "+self.data_utrzymanie
+            self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie\nruchu\n\n"+self.data_utrzymanie
         elif touch.button == 'right'  and self.wcisnieto_utrzymanie == True:
             self.wcisnieto_utrzymanie = False
             self.btn_przywolaj_utrzymanie.md_bg_color = self.default_button_color
             self.btn_przywolaj_utrzymanie.text_color = self.default_text_color
-            self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie ruchu"
+            self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie\nruchu"
         self.reconnectMQTT()
         self.wyslij_MQTT()
 
@@ -628,10 +659,10 @@ class WywolaniaPage(MDStackLayout):
 
         self.btn_przywolaj_magazyn.text="Przywołaj\nMagazyn"
         self.btn_przywolaj_nastawiacza.text="Przywołaj\nNastawiacza"
-        self.btn_przywolaj_jakosc.text="Przywołaj\nKontrolę jakości"
+        self.btn_przywolaj_jakosc.text="Przywołaj\nKontrolę\njakości"
         self.btn_przywolaj_brygadziste.text="Przywołaj\nBrygadzistę"
         self.btn_przywolaj_narzedziowca.text="Przywołaj\nNarzędziowca"
-        self.btn_przywolaj_utrzymanie.text="Przywołaj\nUtrzymanie ruchu"
+        self.btn_przywolaj_utrzymanie.text="Przywołaj\nUtrzymanie\nruchu"
         #self.btn_przywolaj_kasuj.text="Kasuj\nPrzywołanie"
 
     def reconnectMQTT(self):
@@ -651,32 +682,38 @@ class WywolaniaPage(MDStackLayout):
         if wc_magazyn:
             self.btn_przywolaj_magazyn.background_normal = ''
             self.btn_przywolaj_magazyn.md_bg_color = utils.get_color_from_hex(self.check_color)
-            self.btn_przywolaj_magazyn.text = "Przywołaj\nMagazyn "+dat_magazyn
+            self.btn_przywolaj_magazyn.text_color = self.press_text_color
+            self.btn_przywolaj_magazyn.text = "Przywołaj\nMagazyn\n\n"+dat_magazyn
             self.wcisnieto_magazyn = True
         if wc_nastawiacz:
             self.btn_przywolaj_nastawiacza.background_normal = ''
             self.btn_przywolaj_nastawiacza.md_bg_color = utils.get_color_from_hex(self.check_color)
-            self.btn_przywolaj_nastawiacza.text = "Przywołaj\nNastawiacza "+dat_nastawiacz
+            self.btn_przywolaj_nastawiacza.text_color = self.press_text_color
+            self.btn_przywolaj_nastawiacza.text = "Przywołaj\nNastawiacza\n\n"+dat_nastawiacz
             self.wcisnieto_nastawiacz = True
         if wc_jakosc:
             self.btn_przywolaj_jakosc.background_normal = ''
             self.btn_przywolaj_jakosc.md_bg_color = utils.get_color_from_hex(self.check_color)
-            self.btn_przywolaj_jakosc.text = "Przywołaj\nKontrolę jakości "+dat_jakosc
+            self.btn_przywolaj_jakosc.text_color = self.press_text_color
+            self.btn_przywolaj_jakosc.text = "Przywołaj\nKontrolę\njakości\n\n"+dat_jakosc
             self.wcisnieto_jakosc = True
         if wc_brygadzista:
             self.btn_przywolaj_brygadziste.background_normal = ''
             self.btn_przywolaj_brygadziste.md_bg_color = utils.get_color_from_hex(self.check_color)
-            self.btn_przywolaj_brygadziste.text = "Przywołaj\nBrygadzistę "+dat_brygadzista
+            self.btn_przywolaj_brygadziste.text_color = self.press_text_color
+            self.btn_przywolaj_brygadziste.text = "Przywołaj\nBrygadzistę\n\n"+dat_brygadzista
             self.wcisnieto_brygadzista = True
         if wc_narzedziowiec:
             self.btn_przywolaj_narzedziowca.background_normal = ''
             self.btn_przywolaj_narzedziowca.md_bg_color = utils.get_color_from_hex(self.check_color)
-            self.btn_przywolaj_narzedziowca.text = "Przywołaj\nNarzędziowca "+dat_narzedziowiec
+            self.btn_przywolaj_narzedziowca.text_color = self.press_text_color
+            self.btn_przywolaj_narzedziowca.text = "Przywołaj\nNarzędziowca\n\n"+dat_narzedziowiec
             self.wcisnieto_narzedziowiec = True
         if wc_utrzymanie:
             self.btn_przywolaj_utrzymanie.background_normal = ''
             self.btn_przywolaj_utrzymanie.md_bg_color = utils.get_color_from_hex(self.check_color)
-            self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie ruchu "+dat_utrzymanie
+            self.btn_przywolaj_utrzymanie.text_color = self.press_text_color
+            self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie\nruchu\n\n"+dat_utrzymanie
             self.wcisnieto_utrzymanie = True
 
 
@@ -748,17 +785,17 @@ class WtryskarkaPage(MDStackLayout):
         # self.btn_wybrak_op.bind(on_press=self.btn_postoj_action)
         ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie ##Przywoływanie
 
-        self.btn_praca.font_size = "28sp"
-        self.btn_awaria_m.font_size = "28sp"
-        self.btn_awaria_f.font_size = "28sp"
-        self.btn_przezbrajanie.font_size = "28sp"
-        self.btn_proby.font_size = "28sp"
-        self.btn_susz_m.font_size = "28sp"
-        self.btn_brak_zaop.font_size = "28sp"
-        self.btn_postoj.font_size = "28sp"
-        self.btn_brak_zaop.font_size = "28sp"
-        self.btn_brak_oper.font_size = "28sp"
-        self.btn_nie_zgloszono.font_size = "28sp"
+        self.btn_praca.font_size = wtryskarka_font_size
+        self.btn_awaria_m.font_size = wtryskarka_font_size
+        self.btn_awaria_f.font_size = wtryskarka_font_size
+        self.btn_przezbrajanie.font_size = wtryskarka_font_size
+        self.btn_proby.font_size = wtryskarka_font_size
+        self.btn_susz_m.font_size = wtryskarka_font_size
+        self.btn_brak_zaop.font_size = wtryskarka_font_size
+        self.btn_postoj.font_size = wtryskarka_font_size
+        self.btn_brak_zaop.font_size = wtryskarka_font_size
+        self.btn_brak_oper.font_size = wtryskarka_font_size
+        self.btn_nie_zgloszono.font_size = wtryskarka_font_size
 
         # self.btn_wybrak_op.font_size = "20sp"
         #zmiana
@@ -982,15 +1019,17 @@ class App(MDApp):
         global konsola_page
         global wtryskarka_page
         global wywolania_page
+        global win_width
 
         konsola_page = KonsolaPage()
-        wtryskarka_page = WtryskarkaPage()
+        wtryskarka_page = WtryskarkaPage(size_hint_x=None, width=win_width*0.6)
         wywolania_page = WywolaniaPage()
 
 
 
 
-        self.title = f'{maszyna} {miejsce} {czas_wysylania}s {LOCAL_IP} WERSJA: {wersja}'
+        #self.title = f'{maszyna} {miejsce} {czas_wysylania}s {LOCAL_IP} WERSJA: {wersja}'
+        self.title = f'CykleTCP: {wersja}'
         self.icon = os.path.join(cwd, 'data', 'img', 'icon.png')
 
 
@@ -1491,11 +1530,7 @@ class App(MDApp):
         if key == ord('r'):
             restart_program()
 
-        if key == 32:
-            if self.screen_manager.current == 'Wywolania':
-                self.screen_manager.current = 'Wtryskarka'
-            elif self.screen_manager.current == 'Wtryskarka':
-                self.screen_manager.current = 'Wywolania'
+        #spacja: if key == 32:
 
 
     def build(self):
@@ -1512,37 +1547,49 @@ class App(MDApp):
 
 
         self.run_console = False
-        konsola_page.print_console(start_text, '#ffffff')
+        #konsola_page.print_console(start_text, '#ffffff')
 
-        if data_z_pliku:
-            konsola_page.print_console(f'''[color=#FFFFFF]Wczytano dane z poprzedniego uruchomienia:[/color]\n
-[color=#FFFFFF]PRZYCISK:[/color]    [color=#FFFFFF]{przycisk}[/color]\n
-[color=#FFFFFF]WTRYSK:[/color]  [color=#FFFFFF]{wtrysk_s}[/color]\n
-[color=#FFFFFF]WYBRAK:[/color]  [color=#FFFFFF]{wybrak_s}[/color]\n
-[color=#FFFFFF]WSPÓŁCZYNNIK WYSYŁANIA:[/color]  [color=#FFFFFF]{wsp_wys_s}[/color]''', '#ffffff')
+        #if data_z_pliku:
+            #konsola_page.print_console(f'''[color=#FFFFFF]Wczytano dane z poprzedniego uruchomienia:[/color]\n
+#[color=#FFFFFF]PRZYCISK:[/color]    [color=#FFFFFF]{przycisk}[/color]\n
+#[color=#FFFFFF]WTRYSK:[/color]  [color=#FFFFFF]{wtrysk_s}[/color]\n
+#[color=#FFFFFF]WYBRAK:[/color]  [color=#FFFFFF]{wybrak_s}[/color]\n
+#[color=#FFFFFF]WSPÓŁCZYNNIK WYSYŁANIA:[/color]  [color=#FFFFFF]{wsp_wys_s}[/color]''', '#ffffff')
         # Watek wysylania do bazy danuch
 
         # Initial, connection screen (we use passed in name to activate screen)
         # First create a page, then a new screen, add page to screen and screen to screen manager
 
-        self.tytul = MDLabel(text=maszyna, size_hint=(1, 0.04),padding=(20,0))
+        self.tytul = MDLabel(text=f'{maszyna}  {miejsce} ', size_hint=(1, 0.04),padding=(10,0))
         self.tytul.font_size = "16sp"
+        self.tytul.md_bg_color = "white"
+        self.tytul.text_color = "black"
 
         self.screen_manager = MDScreenManager()
+        self.przyciskiLayout = MDGridLayout(cols=2)
 
 
-        self.screen_wtryskarka = MDScreen(name='Wtryskarka')
-        self.screen_wtryskarka.add_widget(wtryskarka_page)
-        self.screen_manager.add_widget(self.screen_wtryskarka)
+        #self.screen_wtryskarka = MDScreen(name='Wtryskarka')
+        #self.screen_wtryskarka.add_widget(wtryskarka_page)
+        #self.screen_manager.add_widget(self.screen_wtryskarka)
+
 
         # Info page
 
-        self.screen_wywolania = MDScreen(name='Wywolania')
-        self.screen_wywolania.add_widget(wywolania_page)
-        self.screen_manager.add_widget(self.screen_wywolania)
+        #self.screen_wywolania = MDScreen(name='Wywolania')
+        #self.screen_wywolania.add_widget(wywolania_page)
+        #self.screen_manager.add_widget(self.screen_wywolania)
+
+        self.przyciskiLayout.add_widget(wtryskarka_page)
+        self.przyciskiLayout.add_widget(wywolania_page)
+
+        self.screen_przyciski = MDScreen(name='Przyciski')
+        self.screen_przyciski.add_widget(self.przyciskiLayout)
 
         self.screen_konsola = MDScreen(name='Konsola')
         self.screen_konsola.add_widget(konsola_page)
+
+        self.screen_manager.add_widget(self.screen_przyciski)
         self.screen_manager.add_widget(self.screen_konsola)
 
 
@@ -1550,26 +1597,17 @@ class App(MDApp):
         self.thread_TCP = threading.Thread(target=self.TCP_IP)
         self.thread_TCP.start()
 
-        #self.wyslij_dane_SQL()
+        self.cale_okno = MDGridLayout(cols=1)
+        self.cale_okno.add_widget(self.tytul)
+        self.cale_okno.add_widget(self.screen_manager)
+
 
         t = threading.Timer(czas_wysylania, self.wyslij_dane_SQL)
         t.start()
 
-        if(zmieniaj_okna):
-            Clock.schedule_interval(self.zmien_okno, czas_zmiana_okna)
 
+        return MDScreen(self.cale_okno)
 
-        return MDScreen(self.screen_manager,MDStackLayout(self.tytul))
-
-
-    def zmien_okno(self, dt):
-        global wywolania_page
-        if self.screen_manager.current == 'Wywolania':
-            self.screen_manager.current = 'Wtryskarka'
-        elif self.screen_manager.current == 'Wtryskarka':
-            wywolania_page.reconnectMQTT()
-            wywolania_page.wyslij_MQTT()
-            self.screen_manager.current = 'Wywolania'
 
 
 
