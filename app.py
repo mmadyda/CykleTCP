@@ -1,24 +1,18 @@
 import json
 import pickle
-import subprocess
 import sys
 import socket
 import threading
-
 import paho
 import psutil as psutil
 import pymysql
 import configparser
 
-import win32api
-import win32con
-import win32process
+
 from infi.systray.win32_adapter import GetSystemMetrics
 from kivy.clock import Clock
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 import paho.mqtt.client as mqtt
-
 from kivymd.app import MDApp
 from kivymd.uix.button import MDRectangleFlatButton
 from kivymd.uix.gridlayout import MDGridLayout
@@ -26,7 +20,6 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.stacklayout import MDStackLayout
-from tendo import singleton
 from termcolor import colored
 import time
 from datetime import datetime as czas
@@ -82,7 +75,7 @@ def enablePrint():
 # SKOCZOW/NARZEDZIOWNIA/#
 # SKOCZOW/UTRZYMANIE/#
 
-wersja = '01.03.2023'
+wersja = '02.03.2023'
 
 #sprawdzenie sciezki pliku frozet to pyinstaller
 cwd = os.getcwd()
@@ -205,6 +198,7 @@ user_bazy = "marek"
 tabela_bazy = "cykle_szybkie"
 zapytanie_pop_data = "SELECT max(data_g) FROM techniplast.cykle_szybkie where maszyna = '"+maszyna+"';"
 pop_insert_date = ""
+czas_aktualizujMQTT = 20
 
 #zewnetrzne ip 91.225.157.226:6666
 #wewnetrzne ip 10.0.1.215:3306
@@ -348,12 +342,14 @@ class KonsolaPage(MDStackLayout):
         if wiele_maszyn:
             self.dane_comm = MDLabel(text=f'IP {LOCAL_IP}  PORT {TCP_PORT} '
                                           f'\nWysyłanie danych do bazy co: {czas_wysylania}s'
+                                          f'\nAktualizacja MQTT co: {czas_aktualizujMQTT}s'
                                           f'\nWiele maszyn: {wiele_maszyn}'
-                                          f'\nNumer programu: {nr_programu}', size_hint=(1, 0.1), padding=(10, 0))
+                                          f'\nNumer programu: {nr_programu}', size_hint=(1, 0.12), padding=(10, 0))
 
         else:
             self.dane_comm = MDLabel(text=f'IP {LOCAL_IP}  PORT {TCP_PORT} '
-                                          f'\nWysyłanie danych do bazy co: {czas_wysylania}s', size_hint=(1, 0.06), padding=(10, 0))
+                                          f'\nWysyłanie danych do bazy co: {czas_wysylania}s'
+                                          f'\nAktualizacja MQTT co: {czas_aktualizujMQTT}s', size_hint=(1, 0.09), padding=(10, 0))
 
         self.console_size = 0.6
         self.console = RstDocument(text='',
@@ -399,7 +395,8 @@ class WywolaniaPage(MDStackLayout):
 
         self.info_on_color = 'on_blue'
         self.info_console_on_color = '#33ccff'
-        self.check_color = "#92D050"
+        #self.check_color = "#92D050"
+        self.check_color = "#28282B"
         self.md_bg_color = "#ffffff"
 
 
@@ -895,7 +892,7 @@ gorna_granica_wsp = 2
         #self.btn_praca.background_normal = ''
         #self.btn_praca.background_color = utils.get_color_from_hex("#608934")
         self.btn_praca.text_color = self.press_text_color
-        self.btn_praca.md_bg_color = utils.get_color_from_hex("#608934")
+        self.btn_praca.md_bg_color = utils.get_color_from_hex("#4F7942")
 
     def btn_proby_action(self, instance):
         global przycisk
@@ -904,7 +901,7 @@ gorna_granica_wsp = 2
         konsola_page.print_console('P2 -> PROBY TECHNOLOGICZNE', self.info_console_on_color)
         self.default_buttons_color()
         self.btn_proby.text_color = self.press_text_color
-        self.btn_proby.md_bg_color = utils.get_color_from_hex("#92D050")
+        self.btn_proby.md_bg_color = utils.get_color_from_hex("#93C572")
     def btn_postoj_action(self, instance):
         global przycisk
         przycisk = 'P3'
@@ -912,7 +909,7 @@ gorna_granica_wsp = 2
         konsola_page.print_console('P3 -> POSTOJ', self.info_console_on_color)
         self.default_buttons_color()
         self.btn_postoj.text_color = self.press_text_color
-        self.btn_postoj.md_bg_color = utils.get_color_from_hex("#BFBFBF")
+        self.btn_postoj.md_bg_color = utils.get_color_from_hex("#899499")
 
     def btn_przezbrajanie_action(self, instance):
         global przycisk
@@ -930,7 +927,7 @@ gorna_granica_wsp = 2
         konsola_page.print_console('P5 -> SUSZENIE MATERIAŁU', self.info_console_on_color)
         self.default_buttons_color()
         self.btn_susz_m.text_color = self.press_text_color
-        self.btn_susz_m.md_bg_color = utils.get_color_from_hex("#8d6e63")
+        self.btn_susz_m.md_bg_color = utils.get_color_from_hex("#7B3F00")
 
     def btn_awaria_m_action(self, instance):
         global przycisk
@@ -957,7 +954,7 @@ gorna_granica_wsp = 2
         konsola_page.print_console('P8 -> BRAK ZAOPATRZENIA', self.info_console_on_color)
         self.default_buttons_color()
         self.btn_brak_zaop.text_color = self.press_text_color
-        self.btn_brak_zaop.md_bg_color = utils.get_color_from_hex("#CEC250")
+        self.btn_brak_zaop.md_bg_color = utils.get_color_from_hex("#FFAC1C")
     def btn_brak_oper_action(self, instance):
         global przycisk
         przycisk = 'P9'
@@ -965,7 +962,7 @@ gorna_granica_wsp = 2
         konsola_page.print_console('P9 -> BRAK OPERATORA', self.info_console_on_color)
         self.default_buttons_color()
         self.btn_brak_oper.text_color = self.press_text_color
-        self.btn_brak_oper.md_bg_color = utils.get_color_from_hex("#8E44AD")
+        self.btn_brak_oper.md_bg_color = utils.get_color_from_hex("#7F00FF")
 
     def btn_nie_zgloszono_color(self):
         global przycisk
@@ -974,7 +971,7 @@ gorna_granica_wsp = 2
         konsola_page.print_console('P10 -> NIE ZGLOSZONO', self.info_console_on_color)
         self.default_buttons_color()
         self.btn_nie_zgloszono.text_color = self.press_text_color
-        self.btn_nie_zgloszono.md_bg_color = utils.get_color_from_hex("#FF0000")
+        self.btn_nie_zgloszono.md_bg_color = utils.get_color_from_hex("#D22B2B")
 
         ###############################################################################################################
 
@@ -1531,6 +1528,10 @@ class App(MDApp):
             restart_program()
 
         #spacja: if key == 32:
+    def aktualizujMQTT(self, dt):
+        global wywolania_page
+        wywolania_page.reconnectMQTT()
+        wywolania_page.wyslij_MQTT()
 
 
     def build(self):
@@ -1544,6 +1545,7 @@ class App(MDApp):
         global wsp_wys_s
         global data_z_pliku
         global konsola_page
+        global czas_aktualizujMQTT
 
 
         self.run_console = False
@@ -1605,7 +1607,7 @@ class App(MDApp):
         t = threading.Timer(czas_wysylania, self.wyslij_dane_SQL)
         t.start()
 
-
+        Clock.schedule_interval(self.aktualizujMQTT, czas_aktualizujMQTT)
         return MDScreen(self.cale_okno)
 
 
