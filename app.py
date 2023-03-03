@@ -75,7 +75,7 @@ def enablePrint():
 # SKOCZOW/NARZEDZIOWNIA/#
 # SKOCZOW/UTRZYMANIE/#
 
-wersja = '02.03.2023'
+wersja = '03.03.2023'
 
 #sprawdzenie sciezki pliku frozet to pyinstaller
 cwd = os.getcwd()
@@ -396,8 +396,11 @@ class WywolaniaPage(MDStackLayout):
         self.info_on_color = 'on_blue'
         self.info_console_on_color = '#33ccff'
         #self.check_color = "#92D050"
-        self.check_color = "#28282B"
+        self.check_color = "#ADD8E6"
         self.md_bg_color = "#ffffff"
+        self.default_button_color = utils.get_color_from_hex("#28282B")
+        self.press_text_color = utils.get_color_from_hex("#000000")
+        self.default_text_color = utils.get_color_from_hex("#ffffff")
 
 
 
@@ -467,9 +470,7 @@ class WywolaniaPage(MDStackLayout):
         self.add_widget(self.btn_przywolaj_narzedziowca)
         self.add_widget(self.btn_przywolaj_utrzymanie)
 
-        self.default_button_color = utils.get_color_from_hex("#dddddd")
-        self.press_text_color = utils.get_color_from_hex("#ffffff")
-        self.default_text_color = utils.get_color_from_hex("#000000")
+
 
 
         self.btn_przywolaj_magazyn.md_bg_color = self.default_button_color
