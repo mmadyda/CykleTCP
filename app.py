@@ -302,15 +302,15 @@ start_text = f'''
         '''
 
 wtryskarka_font_size = "28sp"
-wtryskarka_ukrainski_font_size = "14sp"
-wywolania_font_size = "24sp"
-wywolania_ukrainski_font_size = "14sp"
+wtryskarka_tlumaczenie_font_size = "11sp"
+wywolania_font_size = "22sp"
+wywolania_tlumaczenie_font_size = "11sp"
 
 if wiele_maszyn:
     wtryskarka_font_size = "20sp"
-    wtryskarka_ukrainski_font_size = "12sp"
+    wtryskarka_tlumaczenie_font_size = "10sp"
     wywolania_font_size = "16sp"
-    wywolania_ukrainski_font_size = "12sp"
+    wywolania_tlumaczenie_font_size = "10sp"
 
 try:
     pkl_file = open(os.path.join(cwd, 'data', maszyna+'.pkl'), 'rb')
@@ -339,26 +339,26 @@ try:
 except:
     print('brak pliku ustawień')
 
-napisy_wtryskarka = {'praca':'[size=' + wtryskarka_font_size +']Praca[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Робота[/size]',
-                     'proby':'[size=' + wtryskarka_font_size +']Próby technologiczne[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Технологічні випробування[/size]',
-                     'postoj':'[size=' + wtryskarka_font_size +']Postój planowany[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Планова зупинка[/size]',
-                     'przezbrajanie':'[size=' + wtryskarka_font_size +']Przezbrajanie[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Машинне перетворення[/size]',
-                     'susz_m':'[size=' + wtryskarka_font_size +']Suszenie materiału[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Сушка матеріалу[/size]',
-                     'awaria_m':'[size=' + wtryskarka_font_size +']Awaria maszyny[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Несправність машини[/size]',
-                     'awaria_f':'[size=' + wtryskarka_font_size +']Awaria formy[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Поломка цвілі[/size]',
-                     'brak_zaop':'[size=' + wtryskarka_font_size +']Brak zaopatrzenia[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Відсутність припасів[/size]',
-                     'przerwa_pracownika':'[size=' + wtryskarka_font_size +']Przerwa pracownika[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Перерва співробітників[/size]',
-                     'brak_oper':'[size=' + wtryskarka_font_size +']Brak operatora[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Без оператора[/size]',
-                     'nie_zgloszono':'[size=' + wtryskarka_font_size +']Nie zgłoszono[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Не повідомляється[/size]'}
+napisy_wtryskarka = {'praca':'[size=' + wtryskarka_font_size +']Praca[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Work\nРобота[/size]',
+                     'proby':'[size=' + wtryskarka_font_size +']Próby technologiczne[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Technological trials\nТехнологічні випробування[/size]',
+                     'postoj':'[size=' + wtryskarka_font_size +']Postój planowany[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Planned stop\nПланова зупинка[/size]',
+                     'przezbrajanie':'[size=' + wtryskarka_font_size +']Przezbrajanie[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Retooling\nМашинне перетворення[/size]',
+                     'susz_m':'[size=' + wtryskarka_font_size +']Suszenie materiału[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Material drying\nСушка матеріалу[/size]',
+                     'awaria_m':'[size=' + wtryskarka_font_size +']Awaria maszyny[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Machine failure\nНесправність машини[/size]',
+                     'awaria_f':'[size=' + wtryskarka_font_size +']Awaria formy[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Mold failure\nПоломка цвілі[/size]',
+                     'brak_zaop':'[size=' + wtryskarka_font_size +']Brak zaopatrzenia[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Lack of supply\nВідсутність припасів[/size]',
+                     'przerwa_pracownika':'[size=' + wtryskarka_font_size +']Przerwa pracownika[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Employee break\nПерерва співробітників[/size]',
+                     'brak_oper':'[size=' + wtryskarka_font_size +']Brak operatora[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']No operator\nБез оператора[/size]',
+                     'nie_zgloszono':'[size=' + wtryskarka_font_size +']Nie zgłoszono[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Not reported\nНе повідомляється[/size]'}
 
 
 
-napisy_przywolania = {'magazyn':'[size=' + wtryskarka_font_size +']Przywołaj\nmagazyn[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Викликати\nсклад[/size]',
-                     'nastawiacza':'[size=' + wtryskarka_font_size +']Przywołaj\nnastawiacza[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Викличте\nрегулювача[/size]',
-                     'jakosc':'[size=' + wtryskarka_font_size +']Przywołaj\nkontrolę\njakości[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Згадайте\nконтроль\nякості[/size]',
-                     'brygadziste':'[size=' + wtryskarka_font_size +']Przywołaj\nbrygadzistę[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Виклич\nстаршину[/size]',
-                     'narzedziowca':'[size=' + wtryskarka_font_size +']Przywołaj\nnarzędziowca[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Викликати\nінструментальника[/size]',
-                     'utrzymanie':']Przywołaj\nutrzymanie\nruchu[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Викликати\nтехнічне обслуговування[/size]'}
+napisy_przywolania = {'magazyn':'[size=' + wywolania_font_size +']Przywołaj\nmagazyn[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na warehouse\n\nВикликати\nсклад[/size]',
+                     'nastawiacza':'[size=' + wywolania_font_size +']Przywołaj\nnastawiacza[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\nan adjuster\n\nВикличте\nрегулювача[/size]',
+                     'jakosc':'[size=' + wywolania_font_size +']Przywołaj\nkontrolę\njakości[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Recall\nquality control\n\nЗгадайте\nконтроль якості[/size]',
+                     'brygadziste':'[size=' + wywolania_font_size +']Przywołaj\nbrygadzistę[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na foreman\n\nВиклич\nстаршину[/size]',
+                     'narzedziowca':'[size=' + wywolania_font_size +']Przywołaj\nnarzędziowca[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na toolmaker\n\nВикликати\nінструментальника[/size]',
+                     'utrzymanie':'[size=' + wywolania_font_size +']Przywołaj\nutrzymanie\nruchu[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\nmaintenance\n\nВикликати\nтехнічне обслуговування[/size]'}
 
 
 
