@@ -302,11 +302,15 @@ start_text = f'''
         '''
 
 wtryskarka_font_size = "28sp"
+wtryskarka_ukrainski_font_size = "14sp"
 wywolania_font_size = "24sp"
+wywolania_ukrainski_font_size = "14sp"
 
 if wiele_maszyn:
     wtryskarka_font_size = "20sp"
+    wtryskarka_ukrainski_font_size = "12sp"
     wywolania_font_size = "16sp"
+    wywolania_ukrainski_font_size = "12sp"
 
 try:
     pkl_file = open(os.path.join(cwd, 'data', maszyna+'.pkl'), 'rb')
@@ -331,8 +335,30 @@ try:
     data_z_pliku = True
 
 
+
 except:
     print('brak pliku ustawień')
+
+napisy_wtryskarka = {'praca':'[size=' + wtryskarka_font_size +']Praca[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Робота[/size]',
+                     'proby':'[size=' + wtryskarka_font_size +']Próby technologiczne[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Технологічні випробування[/size]',
+                     'postoj':'[size=' + wtryskarka_font_size +']Postój planowany[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Планова зупинка[/size]',
+                     'przezbrajanie':'[size=' + wtryskarka_font_size +']Przezbrajanie[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Машинне перетворення[/size]',
+                     'susz_m':'[size=' + wtryskarka_font_size +']Suszenie materiału[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Сушка матеріалу[/size]',
+                     'awaria_m':'[size=' + wtryskarka_font_size +']Awaria maszyny[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Несправність машини[/size]',
+                     'awaria_f':'[size=' + wtryskarka_font_size +']Awaria formy[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Поломка цвілі[/size]',
+                     'brak_zaop':'[size=' + wtryskarka_font_size +']Brak zaopatrzenia[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Відсутність припасів[/size]',
+                     'przerwa_pracownika':'[size=' + wtryskarka_font_size +']Przerwa pracownika[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Перерва співробітників[/size]',
+                     'brak_oper':'[size=' + wtryskarka_font_size +']Brak operatora[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Без оператора[/size]',
+                     'nie_zgloszono':'[size=' + wtryskarka_font_size +']Nie zgłoszono[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Не повідомляється[/size]'}
+
+
+
+napisy_przywolania = {'magazyn':'[size=' + wtryskarka_font_size +']Przywołaj\nmagazyn[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Викликати\nсклад[/size]',
+                     'nastawiacza':'[size=' + wtryskarka_font_size +']Przywołaj\nnastawiacza[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Викличте\nрегулювача[/size]',
+                     'jakosc':'[size=' + wtryskarka_font_size +']Przywołaj\nkontrolę\njakości[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Згадайте\nконтроль\nякості[/size]',
+                     'brygadziste':'[size=' + wtryskarka_font_size +']Przywołaj\nbrygadzistę[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Виклич\nстаршину[/size]',
+                     'narzedziowca':'[size=' + wtryskarka_font_size +']Przywołaj\nnarzędziowca[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Викликати\nінструментальника[/size]',
+                     'utrzymanie':']Przywołaj\nutrzymanie\nruchu[/size]\n[size=' + wtryskarka_ukrainski_font_size + ']Викликати\nтехнічне обслуговування[/size]'}
 
 
 
@@ -425,22 +451,28 @@ class WywolaniaPage(MDStackLayout):
         self.data_utrzymanie = ''
 
 
-        self.btn_przywolaj_magazyn = MDRectangleFlatButton(text="Przywołaj\nMagazyn", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_magazyn = MDRectangleFlatButton(text=napisy_przywolania['magazyn'],
+                                                           size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_magazyn.bind(on_touch_down=self.btn_przywolaj_magazyn_action)
 
-        self.btn_przywolaj_nastawiacza = MDRectangleFlatButton(text="Przywołaj\nNastawiacza", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_nastawiacza = MDRectangleFlatButton(text=napisy_przywolania['nastawiacza'],
+                                                               size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_nastawiacza.bind(on_touch_down=self.btn_przywolaj_nastawiacza_action)
 
-        self.btn_przywolaj_jakosc = MDRectangleFlatButton(text="Przywołaj\nKontrolę\njakości", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_jakosc = MDRectangleFlatButton(text=napisy_przywolania['jakosc'],
+                                                          size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_jakosc.bind(on_touch_down=self.btn_przywolaj_jakosc_action)
 
-        self.btn_przywolaj_brygadziste = MDRectangleFlatButton(text="Przywołaj\nBrygadzistę", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_brygadziste = MDRectangleFlatButton(text=napisy_przywolania['brygadziste'],
+                                                               size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_brygadziste.bind(on_touch_down=self.btn_przywolaj_brygadziste_action)
 
-        self.btn_przywolaj_narzedziowca = MDRectangleFlatButton(text="Przywołaj\nNarzędziowca", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_narzedziowca = MDRectangleFlatButton(text=napisy_przywolania['narzedziowca'],
+                                                                size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_narzedziowca.bind(on_touch_down=self.btn_przywolaj_narzedziowca_action)
 
-        self.btn_przywolaj_utrzymanie = MDRectangleFlatButton(text="Przywołaj\nUtrzymanie\nruchu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przywolaj_utrzymanie = MDRectangleFlatButton(text=napisy_przywolania['utrzymanie'],
+                                                              size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_utrzymanie.bind(on_touch_down=self.btn_przywolaj_utrzymanie_action)
 
         self.btn_przywolaj_magazyn.font_size = wywolania_font_size
@@ -751,37 +783,37 @@ class WtryskarkaPage(MDStackLayout):
         self.counter = 0
 
 
-        self.btn_praca = MDRectangleFlatButton(text='Praca\nРобота', size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_praca = MDRectangleFlatButton(text=napisy_wtryskarka['praca'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_praca.bind(on_press=self.btn_praca_action)
 
-        self.btn_proby = MDRectangleFlatButton(text="Próby technologiczne", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_proby = MDRectangleFlatButton(text=napisy_wtryskarka['proby'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_proby.bind(on_press=self.btn_proby_action)
 
-        self.btn_postoj = MDRectangleFlatButton(text="Postój planowany", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_postoj = MDRectangleFlatButton(text=napisy_wtryskarka['postoj'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_postoj.bind(on_press=self.btn_postoj_action)
 
-        self.btn_przezbrajanie = MDRectangleFlatButton(text="Przezbrajanie", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przezbrajanie = MDRectangleFlatButton(text=napisy_wtryskarka['przezbrajanie'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przezbrajanie.bind(on_press=self.btn_przezbrajanie_action)
 
-        self.btn_susz_m = MDRectangleFlatButton(text="Suszenie materiału", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_susz_m = MDRectangleFlatButton(text=napisy_wtryskarka['susz_m'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_susz_m.bind(on_press=self.btn_susz_m_action)
 
-        self.btn_awaria_m = MDRectangleFlatButton(text="Awaria maszyny", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_awaria_m = MDRectangleFlatButton(text=napisy_wtryskarka['awaria_m'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_awaria_m.bind(on_press=self.btn_awaria_m_action)
 
-        self.btn_awaria_f = MDRectangleFlatButton(text="Awaria formy", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_awaria_f = MDRectangleFlatButton(text=napisy_wtryskarka['awaria_f'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_awaria_f.bind(on_press=self.btn_awaria_f_action)
 
-        self.btn_brak_zaop = MDRectangleFlatButton(text="Brak zaopatrzenia", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_brak_zaop = MDRectangleFlatButton(text=napisy_wtryskarka['brak_zaop'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_brak_zaop.bind(on_press=self.btn_brak_zaop_action)
 
-        self.btn_przerwa_pracownika = MDRectangleFlatButton(text="Przerwa pracownika", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_przerwa_pracownika = MDRectangleFlatButton(text=napisy_wtryskarka['przerwa_pracownika'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przerwa_pracownika.bind(on_press=self.btn_przerwa_pracownika_action)
 
-        self.btn_brak_oper = MDRectangleFlatButton(text="Brak operatora", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_brak_oper = MDRectangleFlatButton(text=napisy_wtryskarka['brak_oper'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_brak_oper.bind(on_press=self.btn_brak_oper_action)
 
-        self.btn_nie_zgloszono = MDRectangleFlatButton(text="Nie zgłoszono", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_nie_zgloszono = MDRectangleFlatButton(text=napisy_wtryskarka['nie_zgloszono'],size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
 
         # self.btn_wybrak_op = Button(text="Wada detalu", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         # self.btn_wybrak_op.bind(on_press=self.btn_postoj_action)
