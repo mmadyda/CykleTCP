@@ -14,6 +14,7 @@ from kivy.clock import Clock
 from kivy.uix.textinput import TextInput
 import paho.mqtt.client as mqtt
 from kivymd.app import MDApp
+from kivymd.uix.behaviors import HoverBehavior
 from kivymd.uix.button import MDRectangleFlatButton
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.label import MDLabel
@@ -75,7 +76,7 @@ def enablePrint():
 # SKOCZOW/NARZEDZIOWNIA/#
 # SKOCZOW/UTRZYMANIE/#
 
-wersja = '03.03.2023'
+wersja = '08.05.2023'
 
 #sprawdzenie sciezki pliku frozet to pyinstaller
 cwd = os.getcwd()
@@ -308,8 +309,8 @@ wywolania_tlumaczenie_font_size = "11sp"
 
 if wiele_maszyn:
     wtryskarka_font_size = "20sp"
-    wtryskarka_tlumaczenie_font_size = "10sp"
-    wywolania_font_size = "16sp"
+    wtryskarka_tlumaczenie_font_size = "11sp"
+    wywolania_font_size = "17sp"
     wywolania_tlumaczenie_font_size = "10sp"
 
 try:
@@ -351,6 +352,18 @@ napisy_wtryskarka = {'praca':'[size=' + wtryskarka_font_size +']Praca[/size]\n[s
                      'brak_oper':'[size=' + wtryskarka_font_size +']Brak operatora[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']No operator\nБез оператора[/size]',
                      'nie_zgloszono':'[size=' + wtryskarka_font_size +']Nie zgłoszono[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Not reported\nНе повідомляється[/size]'}
 
+napisy_wtryskarka_lang = {'praca':'[size=' + wtryskarka_tlumaczenie_font_size + ']Work\nРобота[/size]',
+                     'proby':'[size=' + wtryskarka_font_size +']Próby technologiczne[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Technological trials\nТехнологічні випробування[/size]',
+                     'postoj':'[size=' + wtryskarka_font_size +']Postój planowany[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Planned stop\nПланова зупинка[/size]',
+                     'przezbrajanie':'[size=' + wtryskarka_font_size +']Przezbrajanie[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Retooling\nМашинне перетворення[/size]',
+                     'susz_m':'[size=' + wtryskarka_font_size +']Suszenie materiału[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Material drying\nСушка матеріалу[/size]',
+                     'awaria_m':'[size=' + wtryskarka_font_size +']Awaria maszyny[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Machine failure\nНесправність машини[/size]',
+                     'awaria_f':'[size=' + wtryskarka_font_size +']Awaria formy[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Mold failure\nПоломка цвілі[/size]',
+                     'brak_zaop':'[size=' + wtryskarka_font_size +']Brak zaopatrzenia[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Lack of supply\nВідсутність припасів[/size]',
+                     'przerwa_pracownika':'[size=' + wtryskarka_font_size +']Przerwa pracownika[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Employee break\nПерерва співробітників[/size]',
+                     'brak_oper':'[size=' + wtryskarka_font_size +']Brak operatora[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']No operator\nБез оператора[/size]',
+                     'nie_zgloszono':'[size=' + wtryskarka_font_size +']Nie zgłoszono[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Not reported\nНе повідомляється[/size]'}
+
 
 
 napisy_przywolania = {'magazyn':'[size=' + wywolania_font_size +']Przywołaj\nmagazyn[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na warehouse\n\nВикликати\nсклад[/size]',
@@ -359,6 +372,23 @@ napisy_przywolania = {'magazyn':'[size=' + wywolania_font_size +']Przywołaj\nma
                      'brygadziste':'[size=' + wywolania_font_size +']Przywołaj\nbrygadzistę[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na foreman\n\nВиклич\nстаршину[/size]',
                      'narzedziowca':'[size=' + wywolania_font_size +']Przywołaj\nnarzędziowca[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na toolmaker\n\nВикликати\nінструментальника[/size]',
                      'utrzymanie':'[size=' + wywolania_font_size +']Przywołaj\nutrzymanie\nruchu[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\nmaintenance\n\nВикликати\nтехнічне обслуговування[/size]'}
+
+class MDRectangleFlatButton(MDRectangleFlatButton, HoverBehavior):
+    '''Custom menu item implementing hover behavior.'''
+    def __init__(self, text_key = '', **kwargs):
+        super().__init__(**kwargs)
+        self.text_key = text_key
+
+    def on_enter(self, *args):
+        if self.text_key is not '':
+            self.text = napisy_wtryskarka_lang[self.text_key]
+            pass
+
+
+    def on_leave(self, *args):
+        if self.text_key is not '':
+            self.text = napisy_wtryskarka[self.text_key]
+            pass
 
 
 
@@ -455,6 +485,7 @@ class WywolaniaPage(MDStackLayout):
                                                            size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_magazyn.bind(on_touch_down=self.btn_przywolaj_magazyn_action)
 
+
         self.btn_przywolaj_nastawiacza = MDRectangleFlatButton(text=napisy_przywolania['nastawiacza'],
                                                                size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_przywolaj_nastawiacza.bind(on_touch_down=self.btn_przywolaj_nastawiacza_action)
@@ -522,6 +553,7 @@ class WywolaniaPage(MDStackLayout):
         self.btn_przywolaj_utrzymanie.text_color = self.default_text_color
         # self.btn_przywolaj_kasuj.text_color = self.default_text_color
 
+
         if(data_z_pliku):
             self.przyciski_z_pliku()
 
@@ -540,7 +572,7 @@ class WywolaniaPage(MDStackLayout):
             self.wcisnieto_magazyn = False
             self.btn_przywolaj_magazyn.md_bg_color = self.default_button_color
             self.btn_przywolaj_magazyn.text_color = self.default_text_color
-            self.btn_przywolaj_magazyn.text="Przywołaj\nMagazyn"
+            self.btn_przywolaj_magazyn.text=napisy_przywolania['magazyn']
         self.reconnectMQTT()
         self.wyslij_MQTT()
 
@@ -559,7 +591,7 @@ class WywolaniaPage(MDStackLayout):
             self.wcisnieto_nastawiacz = False
             self.btn_przywolaj_nastawiacza.md_bg_color = self.default_button_color
             self.btn_przywolaj_nastawiacza.text_color = self.default_text_color
-            self.btn_przywolaj_nastawiacza.text = "Przywołaj\nNastawiacza"
+            self.btn_przywolaj_nastawiacza.text = napisy_przywolania['nastawiacza']
         self.reconnectMQTT()
         self.wyslij_MQTT()
 
@@ -581,7 +613,7 @@ class WywolaniaPage(MDStackLayout):
             self.wcisnieto_jakosc = False
             self.btn_przywolaj_jakosc.md_bg_color = self.default_button_color
             self.btn_przywolaj_jakosc.text_color = self.default_text_color
-            self.btn_przywolaj_jakosc.text = "Przywołaj\nKontrolę jakości"
+            self.btn_przywolaj_jakosc.text = napisy_przywolania['jakosc']
         self.reconnectMQTT()
         self.wyslij_MQTT()
 
@@ -601,7 +633,7 @@ class WywolaniaPage(MDStackLayout):
             self.wcisnieto_brygadzista = False
             self.btn_przywolaj_brygadziste.md_bg_color = self.default_button_color
             self.btn_przywolaj_brygadziste.text_color = self.default_text_color
-            self.btn_przywolaj_brygadziste.text = "Przywołaj\nBrygadzistę"
+            self.btn_przywolaj_brygadziste.text = napisy_przywolania['brygadziste']
         self.reconnectMQTT()
         self.wyslij_MQTT()
 
@@ -622,7 +654,7 @@ class WywolaniaPage(MDStackLayout):
             self.wcisnieto_narzedziowiec = False
             self.btn_przywolaj_narzedziowca.md_bg_color = self.default_button_color
             self.btn_przywolaj_narzedziowca.text_color = self.default_text_color
-            self.btn_przywolaj_narzedziowca.text = "Przywołaj\nNarzędziowca"
+            self.btn_przywolaj_narzedziowca.text = napisy_przywolania['narzedziowca']
         self.reconnectMQTT()
         self.wyslij_MQTT()
 
@@ -643,7 +675,7 @@ class WywolaniaPage(MDStackLayout):
             self.wcisnieto_utrzymanie = False
             self.btn_przywolaj_utrzymanie.md_bg_color = self.default_button_color
             self.btn_przywolaj_utrzymanie.text_color = self.default_text_color
-            self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie\nruchu"
+            self.btn_przywolaj_utrzymanie.text = napisy_przywolania['utrzymanie']
         self.reconnectMQTT()
         self.wyslij_MQTT()
 
@@ -783,7 +815,7 @@ class WtryskarkaPage(MDStackLayout):
         self.counter = 0
 
 
-        self.btn_praca = MDRectangleFlatButton(text=napisy_wtryskarka['praca'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_praca = MDRectangleFlatButton(text=napisy_wtryskarka['praca'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow), text_key='praca')
         self.btn_praca.bind(on_press=self.btn_praca_action)
 
         self.btn_proby = MDRectangleFlatButton(text=napisy_wtryskarka['proby'], size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
