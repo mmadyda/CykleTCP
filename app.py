@@ -751,7 +751,7 @@ class WtryskarkaPage(MDStackLayout):
         self.counter = 0
 
 
-        self.btn_praca = MDRectangleFlatButton(text='Praca', size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
+        self.btn_praca = MDRectangleFlatButton(text='Praca\nРобота', size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
         self.btn_praca.bind(on_press=self.btn_praca_action)
 
         self.btn_proby = MDRectangleFlatButton(text="Próby technologiczne", size_hint=(1, self.pole_przyciskow / self.liczba_przyciskow))
@@ -1342,27 +1342,29 @@ class App(MDApp):
             if s_postoj_n > 0:
                 #postój nieplanowany
                 wtryskarka_page.btn_nie_zgloszono_color()
-                zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+                zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                      "VALUES ('" + miejsce + "', '" + maszyna + "', '" + str(rzecz_wtrysk_s) + "', '" + str(wybrak_s) + "', '" + str(round(s_postoj_n * wsp_wys_s, 3)) + "', '0', '0', '0', '0', '0', '0', '0', '0' , '0', '0', '"+str(pop_insert_date)+"')"
-                cursor.execute(zapytanie_SQL)
+
                 print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
                 konsola_page.print_console(f'CZAS WYSYLANIA {czas_wysylania}, czas: {str(datetime.datetime.now())[:19]}',
                                    console_info_color)
                 konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+                cursor.execute(zapytanie_SQL)
                 pierwsze_uruchomienie = True
                 czas_cyklu_s = 0
                 cykl_s = 0
                 cykl_e = 0
 
             else:
-                zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+                zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                      "VALUES ('" + miejsce + "', '" + maszyna + "', '" + str(rzecz_wtrysk_s) + "', '" + str(wybrak_s) + "', '" + str(round(s_postoj_n * wsp_wys_s, 3)) + "', '0', '0', '0', '0', '0', '0', '0', '0', '0', '" + str(round(czas_wtrysk_s, 3)) + "' , '"+str(pop_insert_date)+"')"
                 #print(zapytanie_SQL)
-                cursor.execute(zapytanie_SQL)
+
                 print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
                 konsola_page.print_console(f'CZAS WYSYLANIA {czas_wysylania}, czas: {str(datetime.datetime.now())[:19]}',
                                    console_info_color)
                 konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+                cursor.execute(zapytanie_SQL)
 
             print(colored("Wspolczynnik wysylania s = " + str(wsp_wys_s), 'cyan'))
             konsola_page.print_console("Wspolczynnik wysylania s = " + str(wsp_wys_s), console_info_color)
@@ -1373,9 +1375,9 @@ class App(MDApp):
 
         if przycisk == "P2":
             # s_proby_tech = 1
-            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                  "VALUES ('" + miejsce + "', '" + maszyna + "', '0', '0', '0', '0', '0', '0', '" + str(round(s_proby_tech * wsp_wys_s, 3)) + "', '0', '0', '0', '0', '0', '0','"+str(pop_insert_date)+"')"
-            cursor.execute(zapytanie_SQL)
+
             print(colored("JEST: PROBY\n", 'green'))
             print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
 
@@ -1383,6 +1385,7 @@ class App(MDApp):
                                console_info_color)
             konsola_page.print_console("JEST: PROBY\n", console_info_color)
             konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+            cursor.execute(zapytanie_SQL)
             pierwsze_uruchomienie = True
             czas_cyklu_s = 0
             cykl_s = 0
@@ -1392,9 +1395,9 @@ class App(MDApp):
 
         if przycisk == "P3":
             # s_postoj = 1
-            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                  "VALUES ('" + miejsce + "', '" + maszyna + "', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '" + str(round(s_postoj * wsp_wys_s, 3)) + "', '0', '"+str(pop_insert_date)+"')"
-            cursor.execute(zapytanie_SQL)
+
             print(colored("JEST: POSTOJ\n", 'green'))
             print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
 
@@ -1402,6 +1405,7 @@ class App(MDApp):
                                console_info_color)
             konsola_page.print_console("JEST: POSTOJ\n", console_info_color)
             konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+            cursor.execute(zapytanie_SQL)
             pierwsze_uruchomienie = True
             czas_cyklu_s = 0
             cykl_s = 0
@@ -1411,9 +1415,9 @@ class App(MDApp):
 
         if przycisk == "P4":
             # s_przezbrajanie = 1
-            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                  "VALUES ('" + miejsce + "', '" + maszyna + "', '0', '0', '0', '0', '0', '" + str(round(s_przezbrajanie * wsp_wys_s, 3)) + "', '0', '0', '0', '0', '0', '0', '0','"+str(pop_insert_date)+"')"
-            cursor.execute(zapytanie_SQL)
+
             print(colored("JEST: PRZEZBRAJANIE\n", 'green'))
             print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
 
@@ -1421,6 +1425,7 @@ class App(MDApp):
                                console_info_color)
             konsola_page.print_console("JEST: PRZEZBRAJANIE\n", console_info_color)
             konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+            cursor.execute(zapytanie_SQL)
             pierwsze_uruchomienie = True
             czas_cyklu_s = 0
             cykl_s = 0
@@ -1430,9 +1435,9 @@ class App(MDApp):
 
         if przycisk == "P5":
             # s_susz_m = 1
-            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                  "VALUES ('" + miejsce + "', '" + maszyna + "', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0','" + str(round(s_susz_m * wsp_wys_s, 3)) + "', '0', '0','"+str(pop_insert_date)+"')"
-            cursor.execute(zapytanie_SQL)
+
             print(colored("JEST: SUSZENIE MATERIAŁU\n", 'green'))
             print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
 
@@ -1440,6 +1445,7 @@ class App(MDApp):
                                console_info_color)
             konsola_page.print_console("JEST: SUSZENIE MATERIAŁU\n", console_info_color)
             konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+            cursor.execute(zapytanie_SQL)
             pierwsze_uruchomienie = True
             czas_cyklu_s = 0
             cykl_s = 0
@@ -1449,9 +1455,9 @@ class App(MDApp):
 
         if przycisk == "P6":
             # s_awaria_m = 1
-            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                  "VALUES ('" + miejsce + "', '" + maszyna + "', '0', '0', '0', '" + str(round(s_awaria_m * wsp_wys_s, 3)) + "', '0', '0', '0', '0', '0', '0', '0', '0', '0','"+str(pop_insert_date)+"')"
-            cursor.execute(zapytanie_SQL)
+
             print(colored("JEST: AWARIA MASZYNY\n", 'green'))
             print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
 
@@ -1459,6 +1465,7 @@ class App(MDApp):
                                console_info_color)
             konsola_page.print_console("JEST: AWARIA MASZYNY\n", console_info_color)
             konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+            cursor.execute(zapytanie_SQL)
             pierwsze_uruchomienie = True
             czas_cyklu_s = 0
             cykl_s = 0
@@ -1468,9 +1475,9 @@ class App(MDApp):
 
         if przycisk == "P7":
             # s_awaria_f = 1
-            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                  "VALUES ('" + miejsce + "', '" + maszyna + "', '0', '0', '0', '0', '" + str(round(s_awaria_f * wsp_wys_s, 3)) + "', '0', '0', '0', '0', '0', '0', '0', '0', '"+str(pop_insert_date)+"')"
-            cursor.execute(zapytanie_SQL)
+
             print(colored("JEST: AWARIA FORMY\n", 'green'))
             print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
 
@@ -1478,6 +1485,7 @@ class App(MDApp):
                                console_info_color)
             konsola_page.print_console("JEST: AWARIA FORMY\n", console_info_color)
             konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+            cursor.execute(zapytanie_SQL)
             pierwsze_uruchomienie = True
             czas_cyklu_s = 0
             cykl_s = 0
@@ -1487,9 +1495,9 @@ class App(MDApp):
 
         if przycisk == "P8":
             # s_brak_zaop = 1
-            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                  "VALUES ('" + miejsce + "', '" + maszyna + "', '0', '0', '0', '0', '0', '0', '0', '" + str(round(s_brak_zaop * wsp_wys_s, 3)) + "', '0', '0', '0', '0', '0', '"+str(pop_insert_date)+"')"
-            cursor.execute(zapytanie_SQL)
+
             print(colored("JEST: BRAK ZAOPATRZENIA\n", 'green'))
             print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
 
@@ -1497,6 +1505,7 @@ class App(MDApp):
                                console_info_color)
             konsola_page.print_console("JEST: BRAK ZAOPATRZENIA\n", console_info_color)
             konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+            cursor.execute(zapytanie_SQL)
             pierwsze_uruchomienie = True
             czas_cyklu_s = 0
             cykl_s = 0
@@ -1505,9 +1514,9 @@ class App(MDApp):
             pop_wtrysk_s = 0
         if przycisk == "P9":
             # s_brak_zaop = 1
-            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                  "VALUES ('" + miejsce + "', '" + maszyna + "', '0', '0', '0', '0', '0', '0', '0', '0','" + str(round(s_przerwa_p * wsp_wys_s, 3)) + "', '0', '0', '0', '0', '"+str(pop_insert_date)+"')"
-            cursor.execute(zapytanie_SQL)
+
             print(colored("JEST: PRZERWA PRACOWNIKA\n", 'green'))
             print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
 
@@ -1515,6 +1524,7 @@ class App(MDApp):
                                console_info_color)
             konsola_page.print_console("JEST: PRZERWA PRACOWNIKA\n", console_info_color)
             konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+            cursor.execute(zapytanie_SQL)
             pierwsze_uruchomienie = True
             czas_cyklu_s = 0
             cykl_s = 0
@@ -1523,9 +1533,9 @@ class App(MDApp):
             pop_wtrysk_s = 0
         if przycisk == "P10":
             # s_brak_zaop = 1
-            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, 'przerwa', `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
+            zapytanie_SQL = "INSERT INTO `" + nazwa_bazy + "`.`" + tabela_bazy + "` (`miejsce`, `maszyna`, `wtrysk`, `wybrak`, `postoj_n`, `awaria_m`, `awaria_f`, `przezbrajanie`, `proby_tech`, `brak_zaop`, `przerwa`, `brak_oper`, `susz_m`, `postoj`,  `czas_cyklu`, `pop_insert`) " \
                                                                                  "VALUES ('" + miejsce + "', '" + maszyna + "', '0', '0', '0', '0', '0', '0', '0', '0', '0', '" + str(round(s_brak_oper * wsp_wys_s, 3)) + "', '0', '0', '0', '"+str(pop_insert_date)+"')"
-            cursor.execute(zapytanie_SQL)
+
             print(colored("JEST: BRAK OPERATORA\n", 'green'))
             print(colored("WYSYLANIE " + zapytanie_SQL + "", kolor))
 
@@ -1533,6 +1543,7 @@ class App(MDApp):
                                console_info_color)
             konsola_page.print_console("JEST: BRAK OPERATORA\n", console_info_color)
             konsola_page.print_console("WYSYLANIE " + zapytanie_SQL + "", console_color)
+            cursor.execute(zapytanie_SQL)
             pierwsze_uruchomienie = True
             czas_cyklu_s = 0
             cykl_s = 0
