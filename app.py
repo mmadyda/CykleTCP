@@ -792,37 +792,43 @@ class WywolaniaPage(MDStackLayout):
             self.btn_przywolaj_magazyn.background_normal = ''
             self.btn_przywolaj_magazyn.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_magazyn.text_color = self.press_text_color
-            self.btn_przywolaj_magazyn.text = "Przywołaj\nMagazyn\n\n"+dat_magazyn
+            self.btn_przywolaj_magazyn.czas = dat_magazyn
+            self.btn_przywolaj_magazyn.text = dat_magazyn+'\n'+napisy_przywolania['magazyn']
             self.wcisnieto_magazyn = True
         if wc_nastawiacz:
             self.btn_przywolaj_nastawiacza.background_normal = ''
             self.btn_przywolaj_nastawiacza.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_nastawiacza.text_color = self.press_text_color
-            self.btn_przywolaj_nastawiacza.text = "Przywołaj\nNastawiacza\n\n"+dat_nastawiacz
+            self.btn_przywolaj_nastawiacza.czas = dat_nastawiacz
+            self.btn_przywolaj_nastawiacza.text = dat_nastawiacz+'\n'+napisy_przywolania['nastawiacza']
             self.wcisnieto_nastawiacz = True
         if wc_jakosc:
             self.btn_przywolaj_jakosc.background_normal = ''
             self.btn_przywolaj_jakosc.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_jakosc.text_color = self.press_text_color
-            self.btn_przywolaj_jakosc.text = "Przywołaj\nKontrolę\njakości\n\n"+dat_jakosc
+            self.btn_przywolaj_jakosc.czas = dat_jakosc
+            self.btn_przywolaj_jakosc.text = dat_jakosc+'\n'+napisy_przywolania['jakosc']
             self.wcisnieto_jakosc = True
         if wc_brygadzista:
             self.btn_przywolaj_brygadziste.background_normal = ''
             self.btn_przywolaj_brygadziste.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_brygadziste.text_color = self.press_text_color
-            self.btn_przywolaj_brygadziste.text = "Przywołaj\nBrygadzistę\n\n"+dat_brygadzista
+            self.btn_przywolaj_brygadziste.czas = dat_brygadzista
+            self.btn_przywolaj_brygadziste.text = dat_brygadzista+'\n'+napisy_przywolania['brygadziste']
             self.wcisnieto_brygadzista = True
         if wc_narzedziowiec:
             self.btn_przywolaj_narzedziowca.background_normal = ''
             self.btn_przywolaj_narzedziowca.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_narzedziowca.text_color = self.press_text_color
-            self.btn_przywolaj_narzedziowca.text = "Przywołaj\nNarzędziowca\n\n"+dat_narzedziowiec
+            self.btn_przywolaj_narzedziowca.czas = dat_narzedziowiec
+            self.btn_przywolaj_narzedziowca.text = dat_narzedziowiec + '\n' + napisy_przywolania['narzedziowca']
             self.wcisnieto_narzedziowiec = True
         if wc_utrzymanie:
             self.btn_przywolaj_utrzymanie.background_normal = ''
             self.btn_przywolaj_utrzymanie.md_bg_color = utils.get_color_from_hex(self.check_color)
             self.btn_przywolaj_utrzymanie.text_color = self.press_text_color
-            self.btn_przywolaj_utrzymanie.text = "Przywołaj\nUtrzymanie\nruchu\n\n"+dat_utrzymanie
+            self.btn_przywolaj_utrzymanie.czas = dat_utrzymanie
+            self.btn_przywolaj_utrzymanie.text = dat_utrzymanie + '\n' + napisy_przywolania['utrzymanie']
             self.wcisnieto_utrzymanie = True
 
 
