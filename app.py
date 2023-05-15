@@ -77,7 +77,7 @@ def enablePrint():
 # SKOCZOW/NARZEDZIOWNIA/#
 # SKOCZOW/UTRZYMANIE/#
 
-wersja = '09.05.2023'
+wersja = '15.05.2023'
 
 #sprawdzenie sciezki pliku frozet to pyinstaller
 cwd = os.getcwd()
@@ -341,19 +341,7 @@ try:
 except:
     print('brak pliku ustawień')
 
-napisy_wtryskarka = {'praca':'[size=' + wtryskarka_font_size +']Praca[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Work[/size]',
-                     'proby':'[size=' + wtryskarka_font_size +']Próby technologiczne[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Technological trials[/size]',
-                     'postoj':'[size=' + wtryskarka_font_size +']Postój planowany[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Planned stop[/size]',
-                     'przezbrajanie':'[size=' + wtryskarka_font_size +']Przezbrajanie[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Retooling[/size]',
-                     'susz_m':'[size=' + wtryskarka_font_size +']Suszenie materiału[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Material drying[/size]',
-                     'awaria_m':'[size=' + wtryskarka_font_size +']Awaria maszyny[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Machine failure[/size]',
-                     'awaria_f':'[size=' + wtryskarka_font_size +']Awaria formy[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Mold failure[/size]',
-                     'brak_zaop':'[size=' + wtryskarka_font_size +']Brak zaopatrzenia[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Lack of supply[/size]',
-                     'przerwa_pracownika':'[size=' + wtryskarka_font_size +']Przerwa pracownika[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Employee break[/size]',
-                     'brak_oper':'[size=' + wtryskarka_font_size +']Brak operatora[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']No operator[/size]',
-                     'nie_zgloszono':'[size=' + wtryskarka_font_size +']Nie zgłoszono[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Not reported[/size]'}
-
-napisy_wtryskarka_lang = {'praca':'[size=' + wtryskarka_font_size +']Praca[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Робота[/size]',
+napisy_wtryskarka = {'praca':'[size=' + wtryskarka_font_size +']Praca[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Робота[/size]',
                      'proby':'[size=' + wtryskarka_font_size +']Próby technologiczne[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Технологічні\nвипробування[/size]',
                      'postoj':'[size=' + wtryskarka_font_size +']Postój planowany[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Планова зупинка[/size]',
                      'przezbrajanie':'[size=' + wtryskarka_font_size +']Przezbrajanie[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Машинне перетворення[/size]',
@@ -365,22 +353,34 @@ napisy_wtryskarka_lang = {'praca':'[size=' + wtryskarka_font_size +']Praca[/size
                      'brak_oper':'[size=' + wtryskarka_font_size +']Brak operatora[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Без оператора[/size]',
                      'nie_zgloszono':'[size=' + wtryskarka_font_size +']Nie zgłoszono[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Не повідомляється[/size]'}
 
+napisy_wtryskarka_lang = {'praca':'[size=' + wtryskarka_font_size +']Praca[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Work[/size]',
+                     'proby':'[size=' + wtryskarka_font_size +']Próby technologiczne[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Technological trials[/size]',
+                     'postoj':'[size=' + wtryskarka_font_size +']Postój planowany[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Planned stop[/size]',
+                     'przezbrajanie':'[size=' + wtryskarka_font_size +']Przezbrajanie[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Retooling[/size]',
+                     'susz_m':'[size=' + wtryskarka_font_size +']Suszenie materiału[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Material drying[/size]',
+                     'awaria_m':'[size=' + wtryskarka_font_size +']Awaria maszyny[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Machine failure[/size]',
+                     'awaria_f':'[size=' + wtryskarka_font_size +']Awaria formy[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Mold failure[/size]',
+                     'brak_zaop':'[size=' + wtryskarka_font_size +']Brak zaopatrzenia[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Lack of supply[/size]',
+                     'przerwa_pracownika':'[size=' + wtryskarka_font_size +']Przerwa pracownika[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Employee break[/size]',
+                     'brak_oper':'[size=' + wtryskarka_font_size +']Brak operatora[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']No operator[/size]',
+                     'nie_zgloszono':'[size=' + wtryskarka_font_size +']Nie zgłoszono[/size]\n[size=' + wtryskarka_tlumaczenie_font_size + ']Not reported[/size]'}
 
 
-napisy_przywolania = {'magazyn':'[size=' + wywolania_font_size +']Przywołaj\nmagazyn[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na warehouse[/size]',
-                     'nastawiacza':'[size=' + wywolania_font_size +']Przywołaj\nnastawiacza[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\nan adjuster[/size]',
-                     'jakosc':'[size=' + wywolania_font_size +']Przywołaj\nkontrolę\njakości[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Recall\nquality control[/size]',
-                     'brygadziste':'[size=' + wywolania_font_size +']Przywołaj\nbrygadzistę[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na foreman[/size]',
-                     'narzedziowca':'[size=' + wywolania_font_size +']Przywołaj\nnarzędziowca[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na toolmaker[/size]',
-                     'utrzymanie':'[size=' + wywolania_font_size +']Przywołaj\nutrzymanie\nruchu[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\nmaintenance[/size]'}
 
-
-napisy_przywolania_lang = {'magazyn':'[size=' + wywolania_font_size +']Przywołaj\nmagazyn[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Викликати\nсклад[/size]',
+napisy_przywolania = {'magazyn':'[size=' + wywolania_font_size +']Przywołaj\nmagazyn[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Викликати\nсклад[/size]',
                      'nastawiacza':'[size=' + wywolania_font_size +']Przywołaj\nnastawiacza[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Викличте\nрегулювача[/size]',
                      'jakosc':'[size=' + wywolania_font_size +']Przywołaj\nkontrolę\njakości[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Згадайте\nконтроль\nякості[/size]',
                      'brygadziste':'[size=' + wywolania_font_size +']Przywołaj\nbrygadzistę[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Виклич\nстаршину[/size]',
                      'narzedziowca':'[size=' + wywolania_font_size +']Przywołaj\nnarzędziowca[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Викликати\nінструментальника[/size]',
                      'utrzymanie':'[size=' + wywolania_font_size +']Przywołaj\nutrzymanie\nruchu[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Викликати\nтехнічне\nобслуговування[/size]'}
+
+
+napisy_przywolania_lang = {'magazyn':'[size=' + wywolania_font_size +']Przywołaj\nmagazyn[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na warehouse[/size]',
+                     'nastawiacza':'[size=' + wywolania_font_size +']Przywołaj\nnastawiacza[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\nan adjuster[/size]',
+                     'jakosc':'[size=' + wywolania_font_size +']Przywołaj\nkontrolę\njakości[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Recall\nquality control[/size]',
+                     'brygadziste':'[size=' + wywolania_font_size +']Przywołaj\nbrygadzistę[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na foreman[/size]',
+                     'narzedziowca':'[size=' + wywolania_font_size +']Przywołaj\nnarzędziowca[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\na toolmaker[/size]',
+                     'utrzymanie':'[size=' + wywolania_font_size +']Przywołaj\nutrzymanie\nruchu[/size]\n[size=' + wywolania_tlumaczenie_font_size + ']Summon\nmaintenance[/size]'}
 
 class WtryskarkaButton(MDRectangleFlatButton, RectangularElevationBehavior, FocusBehavior, MagicBehavior):
     '''Custom menu item implementing hover behavior.'''
