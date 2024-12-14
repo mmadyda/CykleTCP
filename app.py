@@ -192,27 +192,15 @@ if maszyna == "IP":
 if wiele_maszyn:
     win_width = 350
 
-nazwa_bazy = "techniplast"
-haslo_bazy = "technitools192"
-ip_bazy = "10.0.1.215"
+nazwa_bazy = "****"
+haslo_bazy = "****"
+ip_bazy = "****"
 port_bazy = 3306
 user_bazy = "marek"
 tabela_bazy = "cykle_szybkie"
 zapytanie_pop_data = "SELECT max(data_g) FROM techniplast.cykle_szybkie where maszyna = '"+maszyna+"';"
 pop_insert_date = ""
 czas_aktualizujMQTT = 20
-
-#zewnetrzne ip 91.225.157.226:6666
-#wewnetrzne ip 10.0.1.215:3306
-
-##mqttBroker = 'ee329ce5903f4b4eaf2470a31b104117.s2.eu.hivemq.cloud'
-##mqttUser = "Techniplast"
-##mqttPassword = "Techniplast34"
-##mqttPort = 8883
-##mqttClient = mqtt.Client(maszyna, protocol=paho.mqtt.client.MQTTv31)
-##mqttClient.tls_set(tls_version=paho.mqtt.client.ssl.PROTOCOL_TLS)
-##mqttClient.tls_insecure_set(True)
-##mqttClient.username_pw_set(mqttUser, mqttPassword)
 
 mqttBroker = 'broker.hivemq.com'
 mqttPort = 1883
